@@ -1,3 +1,4 @@
+import ProductCard from '../components/ProductCard'
 import products from '../data/products'
 import {
   Container,
@@ -117,50 +118,12 @@ function Home() {
                 <h2 className="mb-4">
                 Featured Products
                 </h2>
-
                 <Row className="g-4">
                 {products.map((product) => (
-                    <Col key={product.id} md={3}>
-                    <Card className="h-100 shadow-sm">
-                        <Card.Img
-                        variant="top"
-                        src={product.image}
-                        alt={product.name}
-                        />
-
-                        <Card.Body>
-                        <Card.Title>
-                            {product.name}
-                        </Card.Title>
-
-                        <Card.Text className="text-muted">
-                            {product.category}
-                        </Card.Text>
-
-                        <Card.Text>
-                            ⭐ {product.rating}
-                        </Card.Text>
-
-                        <h5 className="text-danger">
-                            ₹{product.price.toLocaleString('en-IN')}
-                        </h5>
-
-                        <Button
-                            variant={
-                            product.inStock
-                                ? 'warning'
-                                : 'secondary'
-                            }
-                            disabled={!product.inStock}
-                        >
-                            {product.inStock
-                            ? 'Add to Cart'
-                            : 'Out of Stock'}
-                        </Button>
-                        </Card.Body>
-                    </Card>
-                    </Col>
-                ))}
+                <Col key={product.id} md={3}>
+                    <ProductCard product={product} />
+                </Col>
+                ))} 
                 </Row>
             </Container>
         </section>
