@@ -164,6 +164,28 @@ function Home() {
                 </Row>
             </Container>
         </section>
+        <section className="pb-5">
+            <Container>
+                <div className="bg-dark text-white rounded p-5 text-center">
+                <h2 className="fw-bold">
+                    Special Deals Just for You
+                </h2>
+
+                <p className="lead mt-3">
+                    Save more on selected electronics, fashion,
+                    home essentials and more.
+                </p>
+
+                <Button
+                    variant="warning"
+                    size="lg"
+                    className="mt-2"
+                >
+                    View Deals
+                </Button>
+                </div>
+            </Container>
+        </section>
     </>
   )
 }
