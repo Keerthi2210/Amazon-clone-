@@ -115,6 +115,17 @@ function Products() {
             Above ₹3,000
           </option>
         </Form.Select>
+        <Button
+          variant="outline-secondary"
+          className="mb-4"
+          onClick={() => {
+            setSelectedCategory('All')
+            setSearchTerm('')
+            setSortOption('default')
+            setPriceFilter('all')
+          }}>
+          Reset Filters
+        </Button>
       </div>
       <Row className="g-4">
         {sortedProducts.map((product) => (
