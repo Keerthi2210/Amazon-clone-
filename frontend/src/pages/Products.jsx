@@ -3,7 +3,8 @@ import {
   Container,
   Row,
   Col,
-  Button
+  Button,
+  Form
 } from 'react-bootstrap'
 
 import products from '../data/products'
@@ -11,12 +12,19 @@ import ProductCard from '../components/ProductCard'
 
 function Products() {
   const [selectedCategory, setSelectedCategory] = useState('All')
-  const filteredProducts =
-  selectedCategory === 'All'
-    ? products
-    : products.filter(
-        (product) => product.category === selectedCategory
-      )
+  const [searchTerm, setSearchTerm] = useState('')
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory =
+      selectedCategory === 'All' ||
+      product.category === selectedCategory
+
+    const matchesSearch =
+      product.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+
+    return matchesCategory && matchesSearch
+  })
   return (
     <Container className="py-5">
       <h1 className="mb-4">
@@ -32,12 +40,18 @@ function Products() {
                   ? 'dark'
                   : 'outline-dark'
               }
-              onClick={() => setSelectedCategory(category)}
-            >
+              onClick={() => setSelectedCategory(category)}>
               {category}
             </Button>
           )
         )}
+        <Form.Control
+          type="search"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          className="mb-4"
+        />
       </div>
       <Row className="g-4">
         {filteredProducts.map((product) => (
