@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import {
   Card,
   Button
@@ -6,16 +7,22 @@ import {
 function ProductCard({ product }) {
   return (
     <Card className="h-100 shadow-sm">
-      <Card.Img
-        variant="top"
-        src={product.image}
-        alt={product.name}
-      />
+      <Link to={`/products/${product.id}`}>
+        <Card.Img
+          variant="top"
+          src={product.image}
+          alt={product.name}
+        />
+      </Link>
 
       <Card.Body className="d-flex flex-column">
-        <Card.Title>
-          {product.name}
-        </Card.Title>
+        <Link
+          to={`/products/${product.id}`}
+          className="text-dark text-decoration-none">
+          <Card.Title>
+            {product.name}
+          </Card.Title>
+        </Link>
 
         <Card.Text className="text-muted">
           {product.category}
