@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+import CartContext from '../context/CartContext'
 import { Link } from 'react-router-dom'
 import {
   Container,
@@ -7,6 +9,11 @@ import {
 } from 'react-bootstrap'
 
 function Navbar() {
+  const { cartItems } = useContext(CartContext)
+  const cartCount = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  )
   return (
     <>
       <BootstrapNavbar
@@ -71,7 +78,7 @@ function Navbar() {
               </Nav.Link>
 
               <Nav.Link href="#">
-                <strong>🛒 Cart (0)</strong>
+                <strong>🛒 Cart ({cartCount})</strong>
               </Nav.Link>
             </Nav>
           </BootstrapNavbar.Collapse>
