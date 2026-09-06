@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import {
   Container,
   Form,
@@ -56,12 +57,11 @@ function Navbar() {
 
           <BootstrapNavbar.Collapse>
             <Nav className="ms-auto align-items-lg-center">
-              <Nav.Link href="#">
-                <small className="d-block">
-                  Hello, Sign in
-                </small>
-                <strong>Account</strong>
-              </Nav.Link>
+              <Nav.Link
+              as={Link}
+              to="/cart">
+              <strong>🛒 Cart (0)</strong>
+            </Nav.Link>
 
               <Nav.Link href="#">
                 <small className="d-block">

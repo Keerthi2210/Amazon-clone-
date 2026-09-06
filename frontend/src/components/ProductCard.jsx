@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+import CartContext from '../context/CartContext'
 import { Link } from 'react-router-dom'
 import {
   Card,
@@ -5,6 +7,7 @@ import {
 } from 'react-bootstrap'
 
 function ProductCard({ product }) {
+  const { addToCart } = useContext(CartContext)
   return (
     <Card className="h-100 shadow-sm">
       <Link to={`/products/${product.id}`}>
@@ -44,6 +47,7 @@ function ProductCard({ product }) {
           }
           disabled={!product.inStock}
           className="mt-auto"
+          onClick={() => addToCart(product)}
         >
           {product.inStock
             ? 'Add to Cart'
