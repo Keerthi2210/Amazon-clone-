@@ -1,4 +1,8 @@
-import { useContext } from 'react'
+import {
+  useContext,
+  useState
+} from 'react'
+
 import CartContext from '../context/CartContext'
 import { Link } from 'react-router-dom'
 import {
@@ -8,6 +12,16 @@ import {
 
 function ProductCard({ product }) {
   const { addToCart } = useContext(CartContext)
+  const [added, setAdded] = useState(false)
+
+  const handleAddToCart = () => {
+    addToCart(product)
+    setAdded(true)
+
+    setTimeout(() => {
+      setAdded(false)
+    }, 1200)
+  }
   return (
     <Card className="h-100 shadow-sm">
       <Link to={`/products/${product.id}`}>
@@ -47,11 +61,14 @@ function ProductCard({ product }) {
           }
           disabled={!product.inStock}
           className="mt-auto"
-          onClick={() => addToCart(product)}
+          onClick={handleAddToCart}
         >
           {product.inStock
-            ? 'Add to Cart'
-            : 'Out of Stock'}
+            ? added
+              ? 'Added ✓'
+              : 'Add to Cart'
+            : 'Out of Stock'
+          }
         </Button>
       </Card.Body>
     </Card>
