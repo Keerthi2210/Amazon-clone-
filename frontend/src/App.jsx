@@ -1,11 +1,11 @@
 import Navbar from './components/Navbar'
-import Products from './pages/Products'
+import ProductDetails from './pages/ProductDetails'
 
 function App() {
   return (
     <>
       <Navbar />
-      <Products />
+      <ProductDetails />
     </>
   )
 }
