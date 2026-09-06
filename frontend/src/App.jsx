@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Products from './pages/Products'
 import ProductDetails from './pages/ProductDetails'
 import Signup from './pages/Signup'
+import Profile from './pages/Profile'
 function App() {
   return (
     <>
@@ -33,6 +34,7 @@ function App() {
           path="/signup"
           element={<Signup />}
         />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </>
   )

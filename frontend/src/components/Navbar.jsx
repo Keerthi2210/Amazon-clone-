@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import AuthContext from '../context/AuthContext'
 import CartContext from '../context/CartContext'
 import { Link } from 'react-router-dom'
 import {
@@ -10,6 +11,7 @@ import {
 
 function Navbar() {
   const { cartItems } = useContext(CartContext)
+  const { user } = useContext(AuthContext)
   const cartCount = cartItems.reduce(
     (total, item) => total + item.quantity,
     0
@@ -72,12 +74,17 @@ function Navbar() {
 
               <Nav.Link
                 as={Link}
-                to="/login"
+                to={user ? '/profile' : '/login'}
               >
                 <small className="d-block">
-                  Hello, Sign in
+                  {user
+                    ? `Hello, ${user.name}`
+                    : 'Hello, Sign in'}
                 </small>
-                <strong>Account</strong>
+
+                <strong>
+                  Account
+                </strong>
               </Nav.Link>
 
               <Nav.Link
