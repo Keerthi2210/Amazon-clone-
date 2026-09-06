@@ -14,8 +14,9 @@ function Products() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchTerm, setSearchTerm] = useState('')
   const [sortOption, setSortOption] = useState('default')
+  const [priceFilter, setPriceFilter] = useState('all')
   const filteredProducts = products.filter((product) => {
-    const matchesCategory =
+  const matchesCategory =
       selectedCategory === 'All' ||
       product.category === selectedCategory
 
@@ -24,7 +25,19 @@ function Products() {
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
 
-    return matchesCategory && matchesSearch
+    let matchesPrice = true
+
+    if (priceFilter === 'under-2500') {
+      matchesPrice = product.price < 2500
+    } else if (priceFilter === '2500-3000') {
+      matchesPrice =
+        product.price >= 2500 &&
+        product.price <= 3000
+    } else if (priceFilter === 'above-3000') {
+      matchesPrice = product.price > 3000
+    }
+
+    return matchesCategory && matchesSearch && matchesPrice
   })
   const sortedProducts = [...filteredProducts]
     if (sortOption === 'price-low-high') {
@@ -80,6 +93,26 @@ function Products() {
 
           <option value="rating-high-low">
             Rating: High to Low
+          </option>
+        </Form.Select>
+        <Form.Select
+          value={priceFilter}
+          onChange={(event) => setPriceFilter(event.target.value)}
+          className="mb-4">
+          <option value="all">
+            All Prices
+          </option>
+
+          <option value="under-2500">
+            Under ₹2,500
+          </option>
+
+          <option value="2500-3000">
+            ₹2,500 - ₹3,000
+          </option>
+
+          <option value="above-3000">
+            Above ₹3,000
           </option>
         </Form.Select>
       </div>
