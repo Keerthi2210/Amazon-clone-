@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom'
 import {
   Container,
   Row,
@@ -9,8 +10,16 @@ import {
 import products from '../data/products'
 
 function ProductDetails() {
-  const product = products[0]
+  const { id } = useParams()
+  const product = products.find((item) => item.id === Number(id))
 
+  if (!product) {
+    return (
+      <Container className="py-5">
+        <h2>Product Not Found</h2>
+      </Container>
+    )
+  }
   return (
     <Container className="py-5">
       <Row className="g-5">
