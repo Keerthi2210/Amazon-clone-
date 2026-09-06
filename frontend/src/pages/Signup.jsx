@@ -6,21 +6,28 @@ import {
   Button
 } from 'react-bootstrap'
 
-function Login() {
+function Signup() {
   return (
-    <Container
-      className="d-flex justify-content-center py-5"
-    >
+    <Container className="d-flex justify-content-center py-5">
       <Card
         className="shadow-sm"
         style={{ width: '100%', maxWidth: '450px' }}
       >
         <Card.Body className="p-4">
           <h2 className="text-center mb-4">
-            Sign In
+            Create Account
           </h2>
 
           <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Full Name</Form.Label>
+
+              <Form.Control
+                type="text"
+                placeholder="Enter your full name"
+              />
+            </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
 
@@ -35,7 +42,16 @@ function Login() {
 
               <Form.Control
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Create a password"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Confirm Password</Form.Label>
+
+              <Form.Control
+                type="password"
+                placeholder="Confirm your password"
               />
             </Form.Group>
 
@@ -44,14 +60,14 @@ function Login() {
               variant="warning"
               className="w-100"
             >
-              Sign In
+              Create Account
             </Button>
           </Form>
 
           <p className="text-center text-muted mt-3 mb-0">
-                Don't have an account?{' '}
-                <Link to="/signup">
-                    Sign up
+                Already have an account?{' '}
+                <Link to="/login">
+                    Sign in
                 </Link>
             </p>
         </Card.Body>
@@ -60,4 +76,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Signup

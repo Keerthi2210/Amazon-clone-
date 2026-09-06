@@ -70,14 +70,20 @@ function Navbar() {
               <strong>🛒 Cart (0)</strong>
             </Nav.Link>
 
-              <Nav.Link href="#">
+              <Nav.Link
+                as={Link}
+                to="/login"
+              >
                 <small className="d-block">
-                  Returns
+                  Hello, Sign in
                 </small>
-                <strong>& Orders</strong>
+                <strong>Account</strong>
               </Nav.Link>
 
-              <Nav.Link href="#">
+              <Nav.Link
+                as={Link}
+                to="/cart"
+              >
                 <strong>🛒 Cart ({cartCount})</strong>
               </Nav.Link>
             </Nav>
