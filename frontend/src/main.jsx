@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
-
+import { OrderProvider } from './context/OrderContext'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -13,7 +13,9 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <App />
+          <OrderProvider>
+            <App />
+          </OrderProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>

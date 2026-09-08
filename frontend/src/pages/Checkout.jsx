@@ -14,9 +14,11 @@ import {
 } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import CartContext from '../context/CartContext'
+import OrderContext from '../context/OrderContext'
 
 function Checkout() {
   const { cartItems, clearCart } = useContext(CartContext)
+  const { addOrder } = useContext(OrderContext)
   const navigate = useNavigate()
 
   // Calculate final cart price
@@ -72,9 +74,35 @@ function Checkout() {
 
     setError('')
 
-    clearCart()
+  const newOrder = {
+    id: Date.now(),
 
-    navigate('/')
+    items: cartItems.map((item) => ({
+      ...item
+    })),
+
+    total: cartTotal,
+
+    deliveryAddress: {
+      fullName,
+      phone,
+      address,
+      city,
+      pinCode
+    },
+
+    paymentMethod,
+
+    status: 'Order Placed',
+
+    orderDate: new Date().toLocaleString()
+  }
+
+  addOrder(newOrder)
+
+  clearCart()
+
+  navigate('/order-success')
   }
   return (
     <Container className="py-5">

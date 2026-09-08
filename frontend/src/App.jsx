@@ -8,6 +8,8 @@ import ProductDetails from './pages/ProductDetails'
 import Signup from './pages/Signup'
 import Profile from './pages/Profile'
 import Checkout from './pages/Checkout'
+import Orders from './pages/Orders'
+import OrderSuccess from './pages/OrderSuccess'
 function App() {
   return (
     <>
@@ -37,6 +39,14 @@ function App() {
         />
         <Route path="/profile" element={<Profile />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route
+          path="/orders"
+          element={<Orders />}
+        />
+        <Route
+          path="/order-success"
+          element={<OrderSuccess />}
+        />
       </Routes>
     </>
   )

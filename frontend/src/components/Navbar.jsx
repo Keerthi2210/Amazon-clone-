@@ -93,6 +93,18 @@ function Navbar() {
               >
                 <strong>🛒 Cart ({cartCount})</strong>
               </Nav.Link>
+              <Nav.Link
+                as={Link}
+                to="/orders"
+              >
+                <small className="d-block">
+                  Returns
+                </small>
+
+                <strong>
+                  & Orders
+                </strong>
+              </Nav.Link>
             </Nav>
           </BootstrapNavbar.Collapse>
         </Container>
