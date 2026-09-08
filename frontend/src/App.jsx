@@ -10,6 +10,9 @@ import Profile from './pages/Profile'
 import Checkout from './pages/Checkout'
 import Orders from './pages/Orders'
 import OrderSuccess from './pages/OrderSuccess'
+import AdminDashboard from './pages/AdminDashboard'
+import AdminProducts from './pages/AdminProducts'
+import AddProduct from './pages/AddProduct'
 function App() {
   return (
     <>
@@ -46,6 +49,18 @@ function App() {
         <Route
           path="/order-success"
           element={<OrderSuccess />}
+        />
+        <Route
+          path="/admin"
+          element={<AdminDashboard />}
+        />
+        <Route
+          path="/admin/products"
+          element={<AdminProducts />}
+        />
+        <Route
+          path="/admin/products/add"
+          element={<AddProduct />}
         />
       </Routes>
     </>
