@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 import {
   Container,
@@ -10,12 +11,15 @@ import {
 import CartContext from '../context/CartContext'
 
 function Cart() {
+  
   const {
     cartItems,
     increaseQuantity,
     decreaseQuantity,
     removeFromCart
   } = useContext(CartContext)
+
+  const navigate = useNavigate()
 
   const cartTotal = cartItems.reduce(
     (total, item) =>
@@ -246,10 +250,10 @@ function Cart() {
                   <Button
                     variant="warning"
                     className="w-100 mt-3"
+                    onClick={() => navigate('/checkout')}
                   >
                     Proceed to Checkout
                   </Button>
-
                 </Card.Body>
               </Card>
 

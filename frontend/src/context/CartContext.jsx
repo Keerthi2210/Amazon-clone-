@@ -25,14 +25,14 @@ export function CartProvider({ children }) {
       }
 
       return [
-        ...currentItems,
-        {
-          ...product,
-          quantity: 1
-        }
-      ]
-    })
-  }
+            ...currentItems,
+            {
+              ...product,
+              quantity: 1
+            }
+          ]
+        })
+      }
   const increaseQuantity = (productId) => {
     setCartItems((currentItems) =>
       currentItems.map((item) =>
@@ -64,6 +64,10 @@ export function CartProvider({ children }) {
       )
     )
   }
+  const clearCart = () => {
+    setCartItems([])
+  }
+  
   return (
     <CartContext.Provider
       value={{
@@ -71,7 +75,8 @@ export function CartProvider({ children }) {
         addToCart,
         increaseQuantity,
         decreaseQuantity,
-        removeFromCart
+        removeFromCart,
+        clearCart
       }}
       >
       {children}
