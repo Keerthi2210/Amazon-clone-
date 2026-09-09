@@ -13,6 +13,7 @@ import OrderSuccess from './pages/OrderSuccess'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminProducts from './pages/AdminProducts'
 import AddProduct from './pages/AddProduct'
+import EditProduct from './pages/EditProduct'
 function App() {
   return (
     <>
@@ -61,6 +62,10 @@ function App() {
         <Route
           path="/admin/products/add"
           element={<AddProduct />}
+        />
+        <Route
+          path="/admin/products/edit/:id"
+          element={<EditProduct />}
         />
       </Routes>
     </>

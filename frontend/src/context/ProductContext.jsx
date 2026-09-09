@@ -18,11 +18,32 @@ export function ProductProvider({ children }) {
     ])
   }
 
+  const deleteProduct = (productId) => {
+    setProducts((currentProducts) =>
+      currentProducts.filter(
+        (product) =>
+          product.id !== productId
+      )
+    )
+  }
+
+  const updateProduct = (updatedProduct) => {
+    setProducts((currentProducts) =>
+      currentProducts.map((product) =>
+        product.id === updatedProduct.id
+          ? updatedProduct
+          : product
+      )
+    )
+  }
+
   return (
     <ProductContext.Provider
       value={{
         products,
-        addProduct
+        addProduct,
+        deleteProduct,
+        updateProduct
       }}
     >
       {children}

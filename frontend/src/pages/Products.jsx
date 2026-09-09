@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import products from '../data/products'
+import { useContext, useState } from 'react'
+import ProductContext from '../context/ProductContext'
 import {
   Container,
   Row,
@@ -7,10 +9,10 @@ import {
   Form
 } from 'react-bootstrap'
 
-import products from '../data/products'
 import ProductCard from '../components/ProductCard'
 
 function Products() {
+  const { products } = useContext(ProductContext)
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchTerm, setSearchTerm] = useState('')
   const [sortOption, setSortOption] = useState('default')

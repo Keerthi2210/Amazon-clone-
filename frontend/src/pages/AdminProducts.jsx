@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import ProductContext from '../context/ProductContext'
+
 import {
   Container,
   Card,
@@ -7,11 +7,18 @@ import {
   Badge,
   Button
 } from 'react-bootstrap'
+
 import { useNavigate } from 'react-router-dom'
+import ProductContext from '../context/ProductContext'
 
 function AdminProducts() {
-    const navigate = useNavigate()
-    const { products } = useContext(ProductContext)
+  const navigate = useNavigate()
+
+  const {
+    products,
+    deleteProduct
+  } = useContext(ProductContext)
+
   return (
     <Container className="py-5">
       <div
@@ -27,12 +34,12 @@ function AdminProducts() {
         </h1>
 
         <Button
-            variant="warning"
-            onClick={() =>
-                navigate('/admin/products/add')
-            }
-            >
-            + Add Product
+          variant="warning"
+          onClick={() =>
+            navigate('/admin/products/add')
+          }
+        >
+          + Add Product
         </Button>
       </div>
 
@@ -116,6 +123,11 @@ function AdminProducts() {
                         variant="outline-primary"
                         size="sm"
                         className="me-2"
+                        onClick={() =>
+                          navigate(
+                            `/admin/products/edit/${product.id}`
+                          )
+                        }
                       >
                         Edit
                       </Button>
@@ -123,10 +135,12 @@ function AdminProducts() {
                       <Button
                         variant="outline-danger"
                         size="sm"
+                        onClick={() =>
+                          deleteProduct(product.id)
+                        }
                       >
                         Delete
                       </Button>
-                      
                     </td>
                   </tr>
                 ))}
