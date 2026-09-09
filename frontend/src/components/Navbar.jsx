@@ -1,7 +1,7 @@
-import { useContext } from 'react'
-import AuthContext from '../context/AuthContext'
-import CartContext from '../context/CartContext'
-import { Link } from 'react-router-dom'
+import {
+  useContext
+} from 'react'
+
 import {
   Container,
   Form,
@@ -9,132 +9,156 @@ import {
   Navbar as BootstrapNavbar
 } from 'react-bootstrap'
 
+import { Link } from 'react-router-dom'
+
+import CartContext from '../context/CartContext'
+import AuthContext from '../context/AuthContext'
+
 function Navbar() {
   const { cartItems } = useContext(CartContext)
   const { user } = useContext(AuthContext)
+
   const cartCount = cartItems.reduce(
-    (total, item) => total + item.quantity,
+    (total, item) =>
+      total + item.quantity,
     0
   )
+
   return (
     <>
       <BootstrapNavbar
         bg="dark"
-        data-bs-theme="dark"
+        variant="dark"
         expand="lg"
+        className="py-2"
       >
         <Container fluid>
-          <BootstrapNavbar.Brand href="#">
+          <BootstrapNavbar.Brand
+            as={Link}
+            to="/"
+            className="fw-bold fs-3"
+          >
             ShopNest
           </BootstrapNavbar.Brand>
 
-          <div className="text-white me-3">
-            <small className="d-block text-secondary">
+          <div className="text-light me-3">
+            <small className="d-block">
               Deliver to
             </small>
-            <strong>Hyderabad</strong>
+
+            <strong>
+              📍 Hyderabad
+            </strong>
           </div>
 
           <Form
-            className="d-flex flex-grow-1 me-3"
-            onSubmit={(event) => event.preventDefault()}
+            className="d-flex flex-grow-1 mx-3"
           >
-            <Form.Select
-              style={{ maxWidth: '120px' }}
-            >
-              <option>All</option>
-              <option>Electronics</option>
-              <option>Fashion</option>
-              <option>Books</option>
-              <option>Home</option>
-            </Form.Select>
-
             <Form.Control
               type="search"
-              placeholder="Search products"
+              placeholder="Search ShopNest"
             />
-
-            <button
-              type="submit"
-              className="btn btn-warning"
-            >
-              Search
-            </button>
           </Form>
 
-          <BootstrapNavbar.Toggle />
-
-          <BootstrapNavbar.Collapse>
-            <Nav className="ms-auto align-items-lg-center">
-              <Nav.Link
+          <Nav className="align-items-lg-center">
+            <Nav.Link
               as={Link}
-              to="/cart">
-              <strong>🛒 Cart (0)</strong>
+              to={
+                user
+                  ? '/profile'
+                  : '/login'
+              }
+            >
+              <small className="d-block">
+                {user
+                  ? `Hello, ${user.name}`
+                  : 'Hello, Sign in'}
+              </small>
+
+              <strong>
+                Account
+              </strong>
             </Nav.Link>
 
-              <Nav.Link
-                as={Link}
-                to={user ? '/profile' : '/login'}
-              >
-                <small className="d-block">
-                  {user
-                    ? `Hello, ${user.name}`
-                    : 'Hello, Sign in'}
-                </small>
+            <Nav.Link
+              as={Link}
+              to="/orders"
+            >
+              <small className="d-block">
+                Returns
+              </small>
 
-                <strong>
-                  Account
-                </strong>
-              </Nav.Link>
+              <strong>
+                & Orders
+              </strong>
+            </Nav.Link>
 
-              <Nav.Link
-                as={Link}
-                to="/cart"
-              >
-                <strong>🛒 Cart ({cartCount})</strong>
-              </Nav.Link>
-              <Nav.Link
-                as={Link}
-                to="/orders"
-              >
-                <small className="d-block">
-                  Returns
-                </small>
+            <Nav.Link
+              as={Link}
+              to="/admin"
+            >
+              <small className="d-block">
+                ShopNest
+              </small>
 
-                <strong>
-                  & Orders
-                </strong>
-              </Nav.Link>
-            </Nav>
-          </BootstrapNavbar.Collapse>
+              <strong>
+                Admin
+              </strong>
+            </Nav.Link>
+
+            <Nav.Link
+              as={Link}
+              to="/cart"
+            >
+              <strong>
+                🛒 Cart ({cartCount})
+              </strong>
+            </Nav.Link>
+          </Nav>
         </Container>
       </BootstrapNavbar>
 
       <Nav
-        className="px-3 py-2"
-        style={{ backgroundColor: '#232f3e' }}
+        className="
+          bg-secondary
+          px-3
+          py-2
+          gap-3
+        "
       >
-        <Nav.Link className="text-white" href="#">
-          ☰ All
+        <Nav.Link
+          as={Link}
+          to="/products"
+          className="text-white"
+        >
+          All Products
         </Nav.Link>
 
-        <Nav.Link className="text-white" href="#">
-          Today's Deals
-        </Nav.Link>
-
-        <Nav.Link className="text-white" href="#">
+        <Nav.Link
+          href="#"
+          className="text-white"
+        >
           Electronics
         </Nav.Link>
 
-        <Nav.Link className="text-white" href="#">
+        <Nav.Link
+          href="#"
+          className="text-white"
+        >
           Fashion
         </Nav.Link>
 
-        <Nav.Link className="text-white" href="#">
+        <Nav.Link
+          href="#"
+          className="text-white"
+        >
           Home & Kitchen
         </Nav.Link>
 
-        <Nav.Link className="text-white" href="#">
+        <Nav.Link
+          href="#"
+          className="text-white"
+        >
           Books
         </Nav.Link>
       </Nav>
