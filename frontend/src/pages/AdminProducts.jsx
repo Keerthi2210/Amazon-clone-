@@ -4,152 +4,229 @@ import {
   Container,
   Card,
   Table,
-  Badge,
-  Button
+  Button,
+  Badge
 } from 'react-bootstrap'
 
-import { useNavigate } from 'react-router-dom'
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom'
+
 import ProductContext from '../context/ProductContext'
 
 function AdminProducts() {
-  const navigate = useNavigate()
-
   const {
     products,
     deleteProduct
   } = useContext(ProductContext)
 
+  const navigate = useNavigate()
+
+  const handleDelete = (product) => {
+    const shouldDelete =
+      window.confirm(
+        `Delete "${product.name}" from ShopNest?`
+      )
+
+    if (shouldDelete) {
+      deleteProduct(product.id)
+    }
+  }
+
   return (
-    <Container className="py-5">
-      <div
-        className="
-          d-flex
-          justify-content-between
-          align-items-center
-          mb-4
-        "
-      >
-        <h1 className="mb-0">
-          Manage Products
-        </h1>
+    <div className="admin-page">
+      <section className="admin-header">
+        <Container>
+          <Link
+            to="/admin"
+            className="admin-back-link"
+          >
+            ← Admin Dashboard
+          </Link>
 
-        <Button
-          variant="warning"
-          onClick={() =>
-            navigate('/admin/products/add')
-          }
-        >
-          + Add Product
-        </Button>
-      </div>
+          <h1>Manage Products</h1>
 
-      <Card className="shadow-sm">
-        <Card.Body>
-          <div className="table-responsive">
-            <Table
-              hover
-              responsive
-              className="align-middle mb-0"
-            >
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Rating</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
+          <p>
+            Add, edit and manage products
+            available in your ShopNest catalog.
+          </p>
+        </Container>
+      </section>
 
-              <tbody>
-                {products.map((product) => (
-                  <tr key={product.id}>
-                    <td>
-                      <div
-                        className="
-                          d-flex
-                          align-items-center
-                          gap-3
-                        "
-                      >
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            objectFit: 'contain'
-                          }}
-                        />
+      <Container className="py-5">
+        <div className="admin-products-toolbar">
+          <div>
+            <h3>Product Catalog</h3>
 
-                        <strong>
-                          {product.name}
-                        </strong>
-                      </div>
-                    </td>
-
-                    <td>
-                      {product.category}
-                    </td>
-
-                    <td>
-                      ₹
-                      {product.price.toLocaleString(
-                        'en-IN'
-                      )}
-                    </td>
-
-                    <td>
-                      ⭐ {product.rating}
-                    </td>
-
-                    <td>
-                      <Badge
-                        bg={
-                          product.inStock
-                            ? 'success'
-                            : 'secondary'
-                        }
-                      >
-                        {product.inStock
-                          ? 'In Stock'
-                          : 'Out of Stock'}
-                      </Badge>
-                    </td>
-
-                    <td>
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        className="me-2"
-                        onClick={() =>
-                          navigate(
-                            `/admin/products/edit/${product.id}`
-                          )
-                        }
-                      >
-                        Edit
-                      </Button>
-
-                      <Button
-                        variant="outline-danger"
-                        size="sm"
-                        onClick={() =>
-                          deleteProduct(product.id)
-                        }
-                      >
-                        Delete
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            <p>
+              {products.length}{' '}
+              {products.length === 1
+                ? 'product'
+                : 'products'}{' '}
+              currently available.
+            </p>
           </div>
-        </Card.Body>
-      </Card>
-    </Container>
+
+          <Button
+            variant="warning"
+            onClick={() =>
+              navigate(
+                '/admin/products/add'
+              )
+            }
+          >
+            + Add Product
+          </Button>
+        </div>
+
+        {products.length === 0 ? (
+          <div className="admin-empty-state">
+            <div>📦</div>
+
+            <h3>No products yet</h3>
+
+            <p>
+              Add your first product to
+              the ShopNest catalog.
+            </p>
+
+            <Button
+              variant="warning"
+              onClick={() =>
+                navigate(
+                  '/admin/products/add'
+                )
+              }
+            >
+              Add Product
+            </Button>
+          </div>
+        ) : (
+          <Card className="admin-table-card">
+            <Card.Body className="p-0">
+              <div className="table-responsive">
+                <Table
+                  hover
+                  className="admin-products-table mb-0"
+                >
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Category</th>
+                      <th>Price</th>
+                      <th>Rating</th>
+                      <th>Status</th>
+                      <th className="text-end">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {products.map(
+                      (product) => (
+                        <tr key={product.id}>
+                          <td>
+                            <div className="admin-product-cell">
+                              <div className="admin-product-image">
+                                <img
+                                  src={
+                                    product.image
+                                  }
+                                  alt={
+                                    product.name
+                                  }
+                                />
+                              </div>
+
+                              <div>
+                                <strong>
+                                  {
+                                    product.name
+                                  }
+                                </strong>
+
+                                <small>
+                                  ID:{' '}
+                                  {product.id}
+                                </small>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td>
+                            {product.category}
+                          </td>
+
+                          <td>
+                            <strong>
+                              ₹
+                              {Number(
+                                product.price
+                              ).toLocaleString(
+                                'en-IN'
+                              )}
+                            </strong>
+                          </td>
+
+                          <td>
+                            <span className="admin-rating">
+                              ★{' '}
+                              {product.rating}
+                            </span>
+                          </td>
+
+                          <td>
+                            {product.inStock ? (
+                              <Badge bg="success">
+                                In Stock
+                              </Badge>
+                            ) : (
+                              <Badge bg="secondary">
+                                Out of Stock
+                              </Badge>
+                            )}
+                          </td>
+
+                          <td>
+                            <div className="admin-table-actions">
+                              <Button
+                                variant="outline-dark"
+                                size="sm"
+                                onClick={() =>
+                                  navigate(
+                                    `/admin/products/edit/${product.id}`
+                                  )
+                                }
+                              >
+                                Edit
+                              </Button>
+
+                              <Button
+                                variant="outline-danger"
+                                size="sm"
+                                onClick={() =>
+                                  handleDelete(
+                                    product
+                                  )
+                                }
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+            </Card.Body>
+          </Card>
+        )}
+      </Container>
+    </div>
   )
 }
 

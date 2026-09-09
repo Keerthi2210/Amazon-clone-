@@ -2,21 +2,32 @@ import {
   useContext,
   useState
 } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+
 import {
   Container,
+  Row,
+  Col,
   Card,
   Form,
   Button
 } from 'react-bootstrap'
 
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom'
+
 import AuthContext from '../context/AuthContext'
 
 function Login() {
-  const { setUser } = useContext(AuthContext)
+  const { setUser } =
+    useContext(AuthContext)
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] =
+    useState('')
+
+  const [password, setPassword] =
+    useState('')
 
   const navigate = useNavigate()
 
@@ -25,7 +36,7 @@ function Login() {
 
     const loggedInUser = {
       name: email.split('@')[0],
-      email: email
+      email
     }
 
     setUser(loggedInUser)
@@ -34,66 +45,95 @@ function Login() {
   }
 
   return (
-    <Container className="d-flex justify-content-center py-5">
-      <Card
-        className="shadow-sm"
-        style={{
-          width: '100%',
-          maxWidth: '450px'
-        }}
-      >
-        <Card.Body className="p-4">
-          <h2 className="text-center mb-4">
-            Sign In
-          </h2>
+    <div className="auth-page">
+      <Container>
+        <Row className="justify-content-center">
+          <Col
+            md={8}
+            lg={5}
+            xl={4}
+          >
+            <Card className="auth-card">
+              <Card.Body>
+                <div className="auth-brand">
+                  Shop<span>Nest</span>
+                </div>
 
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+                <div className="auth-heading">
+                  <h2>
+                    Welcome back
+                  </h2>
 
-              <Form.Control
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(event) =>
-                  setEmail(event.target.value)
-                }
-                required
-              />
-            </Form.Group>
+                  <p>
+                    Sign in to continue shopping
+                    and manage your orders.
+                  </p>
+                </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      Email Address
+                    </Form.Label>
 
-              <Form.Control
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(event) =>
-                  setPassword(event.target.value)
-                }
-                required
-              />
-            </Form.Group>
+                    <Form.Control
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(event) =>
+                        setEmail(
+                          event.target.value
+                        )
+                      }
+                      required
+                    />
+                  </Form.Group>
 
-            <Button
-              type="submit"
-              variant="warning"
-              className="w-100"
-            >
-              Sign In
-            </Button>
-          </Form>
+                  <Form.Group className="mb-4">
+                    <Form.Label>
+                      Password
+                    </Form.Label>
 
-          <p className="text-center text-muted mt-3 mb-0">
-            Don't have an account?{' '}
-            <Link to="/signup">
-              Sign up
-            </Link>
-          </p>
-        </Card.Body>
-      </Card>
-    </Container>
+                    <Form.Control
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(event) =>
+                        setPassword(
+                          event.target.value
+                        )
+                      }
+                      required
+                    />
+                  </Form.Group>
+
+                  <Button
+                    type="submit"
+                    variant="warning"
+                    size="lg"
+                    className="w-100"
+                  >
+                    Sign In
+                  </Button>
+                </Form>
+
+                <div className="auth-demo-note">
+                  Demo authentication is currently
+                  handled only in the frontend.
+                </div>
+
+                <p className="auth-switch-text">
+                  Don't have an account?{' '}
+                  <Link to="/signup">
+                    Create account
+                  </Link>
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   )
 }
 

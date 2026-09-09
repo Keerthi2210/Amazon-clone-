@@ -3,16 +3,22 @@ import {
   useState
 } from 'react'
 
-import CartContext from '../context/CartContext'
-import { Link } from 'react-router-dom'
 import {
   Card,
-  Button
+  Button,
+  Badge
 } from 'react-bootstrap'
 
+import { Link } from 'react-router-dom'
+
+import CartContext from '../context/CartContext'
+
 function ProductCard({ product }) {
-  const { addToCart } = useContext(CartContext)
-  const [added, setAdded] = useState(false)
+  const { addToCart } =
+    useContext(CartContext)
+
+  const [added, setAdded] =
+    useState(false)
 
   const handleAddToCart = () => {
     addToCart(product)
@@ -22,53 +28,81 @@ function ProductCard({ product }) {
       setAdded(false)
     }, 1200)
   }
+
   return (
-    <Card className="h-100 shadow-sm">
-      <Link to={`/products/${product.id}`}>
+    <Card className="product-card h-100">
+      <Link
+        to={`/products/${product.id}`}
+        className="product-image-wrapper"
+      >
         <Card.Img
-          variant="top"
           src={product.image}
           alt={product.name}
+          className="product-image"
         />
+
+        {!product.inStock && (
+          <Badge
+            bg="secondary"
+            className="stock-badge"
+          >
+            Out of Stock
+          </Badge>
+        )}
       </Link>
 
-      <Card.Body className="d-flex flex-column">
+      <Card.Body className="product-card-body">
+        <div className="product-category">
+          {product.category}
+        </div>
+
         <Link
           to={`/products/${product.id}`}
-          className="text-dark text-decoration-none">
-          <Card.Title>
+          className="product-title-link"
+        >
+          <Card.Title className="product-title">
             {product.name}
           </Card.Title>
         </Link>
 
-        <Card.Text className="text-muted">
-          {product.category}
-        </Card.Text>
+        <div className="product-rating-row">
+          <span className="product-star">
+            ★
+          </span>
 
-        <Card.Text>
-          ⭐ {product.rating}
-        </Card.Text>
+          <span className="product-rating">
+            {product.rating}
+          </span>
 
-        <h5 className="text-danger">
-          ₹{product.price.toLocaleString('en-IN')}
-        </h5>
+          <span className="product-rating-label">
+            rating
+          </span>
+        </div>
+
+        <div className="product-price">
+          ₹
+          {product.price.toLocaleString(
+            'en-IN'
+          )}
+        </div>
 
         <Button
           variant={
             product.inStock
-              ? 'warning'
+              ? added
+                ? 'success'
+                : 'warning'
               : 'secondary'
           }
           disabled={!product.inStock}
-          className="mt-auto"
+          className="product-cart-button"
           onClick={handleAddToCart}
         >
           {product.inStock
             ? added
-              ? 'Added ✓'
+              ? 'Added to Cart ✓'
               : 'Add to Cart'
-            : 'Out of Stock'
-          }
+            : 'Currently Unavailable'}
         </Button>
       </Card.Body>
     </Card>

@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
+
 import {
   Container,
   Row,
@@ -8,10 +8,14 @@ import {
   Button
 } from 'react-bootstrap'
 
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom'
+
 import CartContext from '../context/CartContext'
 
 function Cart() {
-  
   const {
     cartItems,
     increaseQuantity,
@@ -27,243 +31,278 @@ function Cart() {
     0
   )
 
-  return (
-    <Container className="py-5">
+  const totalItems = cartItems.reduce(
+    (total, item) =>
+      total + item.quantity,
+    0
+  )
 
-      <h1 className="mb-4">
-        Shopping Cart
-      </h1>
+  if (cartItems.length === 0) {
+    return (
+      <div className="cart-page">
+        <Container className="py-5">
+          <div className="cart-empty-state">
+            <div className="cart-empty-icon">
+              🛒
+            </div>
 
-      {cartItems.length === 0 ? (
-        <Card className="shadow-sm">
-          <Card.Body className="text-center py-5">
-            <h4>Your cart is empty</h4>
+            <h2>Your cart is empty</h2>
 
-            <p className="text-muted mb-0">
-              Add some products to continue shopping.
+            <p>
+              Looks like you haven't added
+              anything to your cart yet.
             </p>
-          </Card.Body>
-        </Card>
-      ) : (
-        <>
-          <Row className="g-4">
 
-            <Col lg={8}>
+            <Button
+              variant="warning"
+              size="lg"
+              onClick={() =>
+                navigate('/products')
+              }
+            >
+              Start Shopping
+            </Button>
+          </div>
+        </Container>
+      </div>
+    )
+  }
 
-              {cartItems.map((item) => {
+  return (
+    <div className="cart-page">
+      <section className="cart-page-header">
+        <Container>
+          <p className="section-eyebrow mb-2">
+            Your Basket
+          </p>
 
-                const itemTotal =
-                  item.price * item.quantity
+          <h1>Shopping Cart</h1>
 
-                return (
-                  <Card
-                    key={item.id}
-                    className="mb-3 shadow-sm"
-                  >
-                    <Card.Body>
+          <p>
+            Review your items before
+            proceeding to checkout.
+          </p>
+        </Container>
+      </section>
 
-                      <Row className="align-items-center">
+      <Container className="py-5">
+        <Row className="g-4">
+          <Col lg={8}>
+            <div className="cart-section-heading">
+              <h4>
+                Cart Items
+              </h4>
 
-                        {/* Product Image */}
-                        <Col
-                          md={3}
-                          className="text-center"
+              <span>
+                {totalItems}{' '}
+                {totalItems === 1
+                  ? 'item'
+                  : 'items'}
+              </span>
+            </div>
+
+            {cartItems.map((item) => {
+              const itemTotal =
+                item.price * item.quantity
+
+              return (
+                <Card
+                  key={item.id}
+                  className="cart-item-card"
+                >
+                  <Card.Body>
+                    <Row className="align-items-center g-4">
+                      <Col
+                        xs={12}
+                        sm={4}
+                        md={3}
+                      >
+                        <Link
+                          to={`/products/${item.id}`}
+                          className="cart-item-image-wrapper"
                         >
                           <img
                             src={item.image}
                             alt={item.name}
-                            className="img-fluid"
-                            style={{
-                              maxHeight: '140px',
-                              objectFit: 'contain'
-                            }}
+                            className="cart-item-image"
                           />
-                        </Col>
+                        </Link>
+                      </Col>
 
-                        {/* Product Information */}
-                        <Col md={5}>
+                      <Col
+                        xs={12}
+                        sm={8}
+                        md={5}
+                      >
+                        <p className="cart-item-category">
+                          {item.category}
+                        </p>
 
-                          <h5>
-                            {item.name}
-                          </h5>
-
-                          <p className="text-muted mb-2">
-                            {item.category}
-                          </p>
-
-                          <p className="mb-2">
-                            Price: ₹
-                            {item.price.toLocaleString(
-                              'en-IN'
-                            )}
-                          </p>
-
-                          {item.inStock && (
-                            <small className="text-success">
-                              In Stock
-                            </small>
-                          )}
-
-                        </Col>
-
-                        {/* Quantity + Item Total */}
-                        <Col
-                          md={4}
-                          className="text-md-end mt-3 mt-md-0"
+                        <Link
+                          to={`/products/${item.id}`}
+                          className="cart-item-title"
                         >
+                          {item.name}
+                        </Link>
 
-                          <div
-                            className="
-                              d-flex
-                              justify-content-md-end
-                              justify-content-start
-                              align-items-center
-                              gap-2
-                              mb-3
-                            "
-                          >
+                        <div className="cart-item-unit-price">
+                          ₹
+                          {item.price.toLocaleString(
+                            'en-IN'
+                          )}{' '}
+                          each
+                        </div>
 
-                            <Button
-                              variant="outline-secondary"
-                              size="sm"
-                              onClick={() =>
-                                decreaseQuantity(item.id)
-                              }
-                              disabled={
-                                item.quantity === 1
-                              }
-                            >
-                              −
-                            </Button>
+                        <span className="cart-stock-status">
+                          ✓ In Stock
+                        </span>
 
-                            <span
-                              className="fw-bold px-2"
-                            >
-                              {item.quantity}
-                            </span>
+                        <Button
+                          variant="link"
+                          className="cart-remove-button"
+                          onClick={() =>
+                            removeFromCart(
+                              item.id
+                            )
+                          }
+                        >
+                          Remove
+                        </Button>
+                      </Col>
 
-                            <Button
-                              variant="outline-secondary"
-                              size="sm"
-                              onClick={() =>
-                                increaseQuantity(item.id)
-                              }
-                            >
-                              +
-                            </Button>
+                      <Col
+                        xs={12}
+                        md={4}
+                        className="text-md-end"
+                      >
+                        <div className="cart-quantity-label">
+                          Quantity
+                        </div>
 
-                          </div>
-
-                          <p className="mb-2">
-                            Item Total
-                          </p>
-
-                          <h5 className="text-danger">
-                            ₹
-                            {itemTotal.toLocaleString(
-                              'en-IN'
-                            )}
-                          </h5>
-
+                        <div className="cart-quantity-control">
                           <Button
-                            variant="link"
-                            className="
-                              text-danger
-                              p-0
-                              text-decoration-none
-                            "
+                            variant="outline-secondary"
                             onClick={() =>
-                              removeFromCart(item.id)
+                              decreaseQuantity(
+                                item.id
+                              )
+                            }
+                            disabled={
+                              item.quantity === 1
                             }
                           >
-                            Remove
+                            −
                           </Button>
 
-                        </Col>
+                          <span>
+                            {item.quantity}
+                          </span>
 
-                      </Row>
+                          <Button
+                            variant="outline-secondary"
+                            onClick={() =>
+                              increaseQuantity(
+                                item.id
+                              )
+                            }
+                          >
+                            +
+                          </Button>
+                        </div>
 
-                    </Card.Body>
-                  </Card>
-                )
-              })}
+                        <div className="cart-item-total-label">
+                          Item total
+                        </div>
 
-            </Col>
+                        <div className="cart-item-total">
+                          ₹
+                          {itemTotal.toLocaleString(
+                            'en-IN'
+                          )}
+                        </div>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              )
+            })}
 
-            {/* Order Summary */}
-            <Col lg={4}>
+            <Button
+              variant="link"
+              className="continue-shopping-link"
+              onClick={() =>
+                navigate('/products')
+              }
+            >
+              ← Continue Shopping
+            </Button>
+          </Col>
 
-              <Card
-                className="shadow-sm"
-                style={{
-                  position: 'sticky',
-                  top: '20px'
-                }}
-              >
-                <Card.Body>
+          <Col lg={4}>
+            <Card className="cart-summary-card">
+              <Card.Body>
+                <h4>
+                  Order Summary
+                </h4>
 
-                  <h4 className="mb-4">
-                    Order Summary
-                  </h4>
+                <div className="cart-summary-row">
+                  <span>
+                    Items ({totalItems})
+                  </span>
 
-                  <div
-                    className="
-                      d-flex
-                      justify-content-between
-                      mb-3
-                    "
-                  >
-                    <span>
-                      Items
-                    </span>
+                  <span>
+                    ₹
+                    {cartTotal.toLocaleString(
+                      'en-IN'
+                    )}
+                  </span>
+                </div>
 
-                    <span>
-                      {cartItems.reduce(
-                        (total, item) =>
-                          total + item.quantity,
-                        0
-                      )}
-                    </span>
-                  </div>
+                <div className="cart-summary-row">
+                  <span>
+                    Delivery
+                  </span>
 
-                  <hr />
+                  <span className="cart-free-delivery">
+                    FREE
+                  </span>
+                </div>
 
-                  <div
-                    className="
-                      d-flex
-                      justify-content-between
-                      align-items-center
-                    "
-                  >
-                    <h5>
-                      Total
-                    </h5>
+                <div className="cart-summary-divider" />
 
-                    <h4 className="text-danger">
-                      ₹
-                      {cartTotal.toLocaleString(
-                        'en-IN'
-                      )}
-                    </h4>
-                  </div>
+                <div className="cart-summary-total">
+                  <span>
+                    Order Total
+                  </span>
 
-                  <Button
-                    variant="warning"
-                    className="w-100 mt-3"
-                    onClick={() => navigate('/checkout')}
-                  >
-                    Proceed to Checkout
-                  </Button>
-                </Card.Body>
-              </Card>
+                  <strong>
+                    ₹
+                    {cartTotal.toLocaleString(
+                      'en-IN'
+                    )}
+                  </strong>
+                </div>
 
-            </Col>
+                <Button
+                  variant="warning"
+                  size="lg"
+                  className="w-100 mt-4"
+                  onClick={() =>
+                    navigate('/checkout')
+                  }
+                >
+                  Proceed to Checkout
+                </Button>
 
-          </Row>
-        </>
-      )}
-
-    </Container>
+                <p className="cart-secure-note">
+                  🔒 Secure checkout
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   )
 }
 

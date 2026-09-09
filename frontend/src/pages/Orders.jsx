@@ -1,163 +1,314 @@
 import { useContext } from 'react'
+
 import {
   Container,
-  Card,
   Row,
   Col,
-  Badge
+  Card,
+  Badge,
+  Button
 } from 'react-bootstrap'
+
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom'
 
 import OrderContext from '../context/OrderContext'
 
 function Orders() {
-  const { orders } = useContext(OrderContext)
+  const { orders } =
+    useContext(OrderContext)
+
+  const navigate = useNavigate()
+
+  if (orders.length === 0) {
+    return (
+      <div className="orders-page">
+        <section className="orders-header">
+          <Container>
+            <p className="section-eyebrow mb-2">
+              Your Purchases
+            </p>
+
+            <h1>
+              My Orders
+            </h1>
+
+            <p>
+              View and track all your
+              ShopNest orders.
+            </p>
+          </Container>
+        </section>
+
+        <Container className="py-5">
+          <div className="orders-empty-state">
+            <div className="orders-empty-icon">
+              📦
+            </div>
+
+            <h2>
+              No orders yet
+            </h2>
+
+            <p>
+              Once you place an order,
+              it will appear here.
+            </p>
+
+            <Button
+              variant="warning"
+              size="lg"
+              onClick={() =>
+                navigate('/products')
+              }
+            >
+              Start Shopping
+            </Button>
+          </div>
+        </Container>
+      </div>
+    )
+  }
 
   return (
-    <Container className="py-5">
-      <h1 className="mb-4">
-        My Orders
-      </h1>
+    <div className="orders-page">
+      <section className="orders-header">
+        <Container>
+          <p className="section-eyebrow mb-2">
+            Your Purchases
+          </p>
 
-      {orders.length === 0 ? (
-        <Card className="shadow-sm">
-          <Card.Body className="text-center py-5">
-            <h4>No orders yet</h4>
+          <h1>
+            My Orders
+          </h1>
 
-            <p className="text-muted mb-0">
-              Your placed orders will appear here.
+          <p>
+            Review your previous ShopNest
+            purchases and order details.
+          </p>
+        </Container>
+      </section>
+
+      <Container className="py-5">
+        <div className="orders-top-row">
+          <div>
+            <h4>
+              Order History
+            </h4>
+
+            <p>
+              {orders.length}{' '}
+              {orders.length === 1
+                ? 'order'
+                : 'orders'}{' '}
+              placed
             </p>
-          </Card.Body>
-        </Card>
-      ) : (
-        orders.map((order) => (
-          <Card
-            key={order.id}
-            className="shadow-sm mb-4"
+          </div>
+
+          <Button
+            variant="outline-dark"
+            onClick={() =>
+              navigate('/products')
+            }
           >
-            <Card.Header>
-              <Row>
-                <Col md={4}>
-                  <small className="text-muted">
-                    ORDER PLACED
-                  </small>
+            Continue Shopping
+          </Button>
+        </div>
 
-                  <div>
+        {orders.map((order) => {
+          const totalItems =
+            order.items.reduce(
+              (total, item) =>
+                total + item.quantity,
+              0
+            )
+
+          return (
+            <Card
+              key={order.id}
+              className="order-card"
+            >
+              <div className="order-card-header">
+                <div>
+                  <span>
+                    Order Placed
+                  </span>
+
+                  <strong>
                     {order.orderDate}
-                  </div>
-                </Col>
+                  </strong>
+                </div>
 
-                <Col md={4}>
-                  <small className="text-muted">
-                    TOTAL
-                  </small>
+                <div>
+                  <span>
+                    Total
+                  </span>
 
-                  <div>
+                  <strong>
                     ₹
                     {order.total.toLocaleString(
                       'en-IN'
                     )}
-                  </div>
-                </Col>
+                  </strong>
+                </div>
 
-                <Col md={4} className="text-md-end">
-                  <small className="text-muted">
-                    ORDER ID
-                  </small>
+                <div>
+                  <span>
+                    Items
+                  </span>
 
-                  <div>
+                  <strong>
+                    {totalItems}
+                  </strong>
+                </div>
+
+                <div className="order-id-section">
+                  <span>
+                    Order ID
+                  </span>
+
+                  <strong>
                     #{order.id}
-                  </div>
-                </Col>
-              </Row>
-            </Card.Header>
-
-            <Card.Body>
-              <div className="mb-3">
-                <Badge bg="success">
-                  {order.status}
-                </Badge>
+                  </strong>
+                </div>
               </div>
 
-              {order.items.map((item) => (
-                <Row
-                  key={item.id}
-                  className="
-                    align-items-center
-                    border-bottom
-                    py-3
-                  "
-                >
-                  <Col md={2}>
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="img-fluid"
-                      style={{
-                        maxHeight: '90px',
-                        objectFit: 'contain'
-                      }}
-                    />
-                  </Col>
-
-                  <Col md={6}>
+              <Card.Body>
+                <div className="order-status-row">
+                  <div>
                     <h5>
-                      {item.name}
+                      Order Status
                     </h5>
 
-                    <p className="text-muted mb-0">
-                      Quantity: {item.quantity}
+                    <p>
+                      Your order has been
+                      successfully placed.
                     </p>
+                  </div>
+
+                  <Badge
+                    bg="success"
+                    className="order-status-badge"
+                  >
+                    {order.status}
+                  </Badge>
+                </div>
+
+                <div className="order-divider" />
+
+                <Row className="g-4">
+                  <Col lg={8}>
+                    <div className="order-products">
+                      {order.items.map(
+                        (item) => (
+                          <div
+                            key={item.id}
+                            className="order-product-item"
+                          >
+                            <Link
+                              to={`/products/${item.id}`}
+                              className="order-product-image-wrapper"
+                            >
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                              />
+                            </Link>
+
+                            <div className="order-product-info">
+                              <Link
+                                to={`/products/${item.id}`}
+                              >
+                                {item.name}
+                              </Link>
+
+                              <span>
+                                {item.category}
+                              </span>
+
+                              <small>
+                                Quantity:{' '}
+                                {item.quantity}
+                              </small>
+                            </div>
+
+                            <div className="order-product-price">
+                              ₹
+                              {(
+                                item.price *
+                                item.quantity
+                              ).toLocaleString(
+                                'en-IN'
+                              )}
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
                   </Col>
 
-                  <Col
-                    md={4}
-                    className="text-md-end"
-                  >
-                    <strong>
-                      ₹
-                      {(
-                        item.price *
-                        item.quantity
-                      ).toLocaleString(
-                        'en-IN'
-                      )}
-                    </strong>
+                  <Col lg={4}>
+                    <div className="order-info-panel">
+                      <h6>
+                        Delivery Address
+                      </h6>
+
+                      <strong>
+                        {
+                          order
+                            .deliveryAddress
+                            .fullName
+                        }
+                      </strong>
+
+                      <p>
+                        {
+                          order
+                            .deliveryAddress
+                            .address
+                        }
+                        <br />
+
+                        {
+                          order
+                            .deliveryAddress
+                            .city
+                        }{' '}
+                        -{' '}
+                        {
+                          order
+                            .deliveryAddress
+                            .pinCode
+                        }
+                        <br />
+
+                        {
+                          order
+                            .deliveryAddress
+                            .phone
+                        }
+                      </p>
+
+                      <div className="order-info-divider" />
+
+                      <h6>
+                        Payment Method
+                      </h6>
+
+                      <p className="mb-0">
+                        {order.paymentMethod}
+                      </p>
+                    </div>
                   </Col>
                 </Row>
-              ))}
-
-              <div className="mt-4">
-                <h6>
-                  Delivery Address
-                </h6>
-
-                <p className="text-muted mb-0">
-                  {order.deliveryAddress.fullName}
-                  <br />
-
-                  {order.deliveryAddress.address}
-                  <br />
-
-                  {order.deliveryAddress.city}
-                  {' - '}
-                  {order.deliveryAddress.pinCode}
-                  <br />
-
-                  Phone: {order.deliveryAddress.phone}
-                </p>
-              </div>
-
-              <div className="mt-3">
-                <strong>
-                  Payment:
-                </strong>{' '}
-                {order.paymentMethod}
-              </div>
-            </Card.Body>
-          </Card>
-        ))
-      )}
-    </Container>
+              </Card.Body>
+            </Card>
+          )
+        })}
+      </Container>
+    </div>
   )
 }
 

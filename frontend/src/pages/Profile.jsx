@@ -1,15 +1,22 @@
 import { useContext } from 'react'
+
 import {
   Container,
   Card,
   Button
 } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+
+import {
+  useNavigate
+} from 'react-router-dom'
 
 import AuthContext from '../context/AuthContext'
 
 function Profile() {
-  const { user, setUser } = useContext(AuthContext)
+  const {
+    user,
+    setUser
+  } = useContext(AuthContext)
 
   const navigate = useNavigate()
 
@@ -20,57 +27,136 @@ function Profile() {
 
   if (!user) {
     return (
-      <Container className="py-5">
-        <Card className="shadow-sm">
-          <Card.Body className="text-center py-5">
-            <h4>You are not signed in</h4>
+      <div className="profile-page">
+        <Container className="py-5">
+          <div className="profile-empty-state">
+            <div className="profile-empty-icon">
+              👤
+            </div>
+
+            <h2>
+              You are not signed in
+            </h2>
+
+            <p>
+              Sign in to view your profile
+              and account details.
+            </p>
 
             <Button
               variant="warning"
-              className="mt-3"
-              onClick={() => navigate('/login')}
+              onClick={() =>
+                navigate('/login')
+              }
             >
               Go to Login
             </Button>
-          </Card.Body>
-        </Card>
-      </Container>
+          </div>
+        </Container>
+      </div>
     )
   }
 
+  const avatarLetter =
+    user.name
+      ? user.name.charAt(0).toUpperCase()
+      : 'U'
+
   return (
-    <Container className="py-5">
-      <Card
-        className="shadow-sm mx-auto"
-        style={{
-          maxWidth: '600px'
-        }}
-      >
-        <Card.Body className="p-4">
-          <h2 className="mb-4">
+    <div className="profile-page">
+      <section className="profile-header">
+        <Container>
+          <p className="section-eyebrow mb-2">
+            Your Account
+          </p>
+
+          <h1>
             My Profile
-          </h2>
+          </h1>
 
           <p>
-            <strong>Name:</strong>{' '}
-            {user.name}
+            Manage your ShopNest account
+            information.
           </p>
+        </Container>
+      </section>
 
-          <p>
-            <strong>Email:</strong>{' '}
-            {user.email}
-          </p>
+      <Container className="py-5">
+        <Card className="profile-card">
+          <Card.Body>
+            <div className="profile-top">
+              <div className="profile-avatar">
+                {avatarLetter}
+              </div>
 
-          <Button
-            variant="danger"
-            className="mt-3"
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </Card.Body>
-      </Card>
-    </Container>
+              <div>
+                <h2>
+                  {user.name}
+                </h2>
+
+                <p>
+                  ShopNest Customer
+                </p>
+              </div>
+            </div>
+
+            <div className="profile-divider" />
+
+            <div className="profile-details">
+              <div>
+                <span>
+                  Full Name
+                </span>
+
+                <strong>
+                  {user.name}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Email Address
+                </span>
+
+                <strong>
+                  {user.email}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Account Type
+                </span>
+
+                <strong>
+                  Customer
+                </strong>
+              </div>
+            </div>
+
+            <div className="profile-actions">
+              <Button
+                variant="warning"
+                onClick={() =>
+                  navigate('/orders')
+                }
+              >
+                View My Orders
+              </Button>
+
+              <Button
+                variant="outline-danger"
+                onClick={
+                  handleLogout
+                }
+              >
+                Logout
+              </Button>
+            </div>
+          </Card.Body>
+        </Card>
+      </Container>
+    </div>
   )
 }
 

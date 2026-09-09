@@ -8,7 +8,8 @@ import {
   Row,
   Col,
   Button,
-  Form
+  Form,
+  Card
 } from 'react-bootstrap'
 
 import ProductContext from '../context/ProductContext'
@@ -30,11 +31,20 @@ function Products() {
   const [priceFilter, setPriceFilter] =
     useState('all')
 
-  const filteredProducts = products.filter(
-    (product) => {
+  const categories = [
+    'All',
+    'Electronics',
+    'Fashion',
+    'Home & Kitchen',
+    'Books'
+  ]
+
+  const filteredProducts =
+    products.filter((product) => {
       const matchesCategory =
         selectedCategory === 'All' ||
-        product.category === selectedCategory
+        product.category ===
+          selectedCategory
 
       const matchesSearch =
         product.name
@@ -45,7 +55,9 @@ function Products() {
 
       let matchesPrice = true
 
-      if (priceFilter === 'under-2500') {
+      if (
+        priceFilter === 'under-2500'
+      ) {
         matchesPrice =
           product.price < 2500
       } else if (
@@ -66,28 +78,35 @@ function Products() {
         matchesSearch &&
         matchesPrice
       )
-    }
-  )
+    })
 
   const sortedProducts = [
     ...filteredProducts
   ]
 
-  if (sortOption === 'price-low-high') {
-    sortedProducts.sort(
-      (a, b) => a.price - b.price
-    )
-  } else if (
-    sortOption === 'price-high-low'
+  if (
+    sortOption ===
+    'price-low-high'
   ) {
     sortedProducts.sort(
-      (a, b) => b.price - a.price
+      (a, b) =>
+        a.price - b.price
     )
   } else if (
-    sortOption === 'rating-high-low'
+    sortOption ===
+    'price-high-low'
   ) {
     sortedProducts.sort(
-      (a, b) => b.rating - a.rating
+      (a, b) =>
+        b.price - a.price
+    )
+  } else if (
+    sortOption ===
+    'rating-high-low'
+  ) {
+    sortedProducts.sort(
+      (a, b) =>
+        b.rating - a.rating
     )
   }
 
@@ -99,137 +118,201 @@ function Products() {
   }
 
   return (
-    <Container className="py-5">
-      <h1 className="mb-4">
-        All Products
-      </h1>
-
-      <div className="d-flex flex-wrap gap-2 mb-4">
-        {[
-          'All',
-          'Electronics',
-          'Fashion',
-          'Home & Kitchen'
-        ].map((category) => (
-          <Button
-            key={category}
-            variant={
-              selectedCategory === category
-                ? 'dark'
-                : 'outline-dark'
-            }
-            onClick={() =>
-              setSelectedCategory(category)
-            }
-          >
-            {category}
-          </Button>
-        ))}
-      </div>
-
-      <Form.Control
-        type="search"
-        placeholder="Search products..."
-        value={searchTerm}
-        onChange={(event) =>
-          setSearchTerm(event.target.value)
-        }
-        className="mb-3"
-      />
-
-      <Row className="g-3 mb-4">
-        <Col md={5}>
-          <Form.Select
-            value={sortOption}
-            onChange={(event) =>
-              setSortOption(
-                event.target.value
-              )
-            }
-          >
-            <option value="default">
-              Sort by
-            </option>
-
-            <option value="price-low-high">
-              Price: Low to High
-            </option>
-
-            <option value="price-high-low">
-              Price: High to Low
-            </option>
-
-            <option value="rating-high-low">
-              Rating: High to Low
-            </option>
-          </Form.Select>
-        </Col>
-
-        <Col md={5}>
-          <Form.Select
-            value={priceFilter}
-            onChange={(event) =>
-              setPriceFilter(
-                event.target.value
-              )
-            }
-          >
-            <option value="all">
-              All Prices
-            </option>
-
-            <option value="under-2500">
-              Under ₹2,500
-            </option>
-
-            <option value="2500-3000">
-              ₹2,500 - ₹3,000
-            </option>
-
-            <option value="above-3000">
-              Above ₹3,000
-            </option>
-          </Form.Select>
-        </Col>
-
-        <Col md={2}>
-          <Button
-            variant="outline-secondary"
-            className="w-100"
-            onClick={resetFilters}
-          >
-            Reset
-          </Button>
-        </Col>
-      </Row>
-
-      {sortedProducts.length === 0 ? (
-        <div className="text-center py-5">
-          <h4>No products found</h4>
-
-          <p className="text-muted">
-            Try changing your search or filters.
+    <div className="products-page">
+      <section className="products-header">
+        <Container>
+          <p className="section-eyebrow mb-2">
+            ShopNest Catalog
           </p>
-        </div>
-      ) : (
-        <Row className="g-4">
-          {sortedProducts.map(
-            (product) => (
-              <Col
-                key={product.id}
-                sm={6}
-                md={4}
-                lg={3}
-              >
-                <ProductCard
-                  product={product}
-                />
+
+          <h1>
+            Explore Products
+          </h1>
+
+          <p>
+            Browse products by category,
+            price, rating and more.
+          </p>
+        </Container>
+      </section>
+
+      <Container className="py-5">
+        <Card className="product-filter-card">
+          <Card.Body>
+            <div className="product-filter-top">
+              <div>
+                <h5>
+                  Find what you need
+                </h5>
+
+                <p>
+                  Search or filter the
+                  catalog below.
+                </p>
+              </div>
+
+              <span className="product-result-count">
+                {
+                  sortedProducts.length
+                }{' '}
+                product
+                {sortedProducts.length !==
+                1
+                  ? 's'
+                  : ''}
+              </span>
+            </div>
+
+            <Form.Control
+              type="search"
+              placeholder="Search by product name..."
+              value={searchTerm}
+              onChange={(event) =>
+                setSearchTerm(
+                  event.target.value
+                )
+              }
+              className="product-search-input"
+            />
+
+            <div className="product-category-buttons">
+              {categories.map(
+                (category) => (
+                  <Button
+                    key={category}
+                    variant={
+                      selectedCategory ===
+                      category
+                        ? 'dark'
+                        : 'outline-dark'
+                    }
+                    onClick={() =>
+                      setSelectedCategory(
+                        category
+                      )
+                    }
+                  >
+                    {category}
+                  </Button>
+                )
+              )}
+            </div>
+
+            <Row className="g-3 mt-1">
+              <Col lg={5}>
+                <Form.Select
+                  value={sortOption}
+                  onChange={(event) =>
+                    setSortOption(
+                      event.target.value
+                    )
+                  }
+                >
+                  <option value="default">
+                    Sort products
+                  </option>
+
+                  <option value="price-low-high">
+                    Price: Low to High
+                  </option>
+
+                  <option value="price-high-low">
+                    Price: High to Low
+                  </option>
+
+                  <option value="rating-high-low">
+                    Rating: High to Low
+                  </option>
+                </Form.Select>
               </Col>
-            )
-          )}
-        </Row>
-      )}
-    </Container>
+
+              <Col lg={5}>
+                <Form.Select
+                  value={priceFilter}
+                  onChange={(event) =>
+                    setPriceFilter(
+                      event.target.value
+                    )
+                  }
+                >
+                  <option value="all">
+                    All price ranges
+                  </option>
+
+                  <option value="under-2500">
+                    Under ₹2,500
+                  </option>
+
+                  <option value="2500-3000">
+                    ₹2,500 - ₹3,000
+                  </option>
+
+                  <option value="above-3000">
+                    Above ₹3,000
+                  </option>
+                </Form.Select>
+              </Col>
+
+              <Col lg={2}>
+                <Button
+                  variant="outline-secondary"
+                  className="w-100"
+                  onClick={
+                    resetFilters
+                  }
+                >
+                  Reset
+                </Button>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+
+        {sortedProducts.length ===
+        0 ? (
+          <div className="product-empty-state">
+            <div className="product-empty-icon">
+              🔎
+            </div>
+
+            <h3>
+              No products found
+            </h3>
+
+            <p>
+              Try another search term
+              or change your filters.
+            </p>
+
+            <Button
+              variant="warning"
+              onClick={
+                resetFilters
+              }
+            >
+              Clear Filters
+            </Button>
+          </div>
+        ) : (
+          <Row className="g-4 mt-1">
+            {sortedProducts.map(
+              (product) => (
+                <Col
+                  key={product.id}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                >
+                  <ProductCard
+                    product={product}
+                  />
+                </Col>
+              )
+            )}
+          </Row>
+        )}
+      </Container>
+    </div>
   )
 }
 

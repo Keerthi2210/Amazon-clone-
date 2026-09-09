@@ -4,111 +4,214 @@ import {
   Container,
   Card,
   Table,
-  Badge
+  Badge,
+  Button
 } from 'react-bootstrap'
+
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom'
 
 import OrderContext from '../context/OrderContext'
 
 function AdminOrders() {
-  const { orders } = useContext(OrderContext)
+  const { orders } =
+    useContext(OrderContext)
+
+  const navigate = useNavigate()
+
+  const getTotalItems = (items) => {
+    return items.reduce(
+      (total, item) =>
+        total + item.quantity,
+      0
+    )
+  }
 
   return (
-    <Container className="py-5">
-      <h1 className="mb-4">
-        Manage Orders
-      </h1>
+    <div className="admin-page">
+      <section className="admin-header">
+        <Container>
+          <Link
+            to="/admin"
+            className="admin-back-link"
+          >
+            ← Admin Dashboard
+          </Link>
 
-      {orders.length === 0 ? (
-        <Card className="shadow-sm">
-          <Card.Body className="text-center p-5">
-            <h4>No orders yet</h4>
+          <h1>Customer Orders</h1>
 
-            <p className="text-muted mb-0">
-              Customer orders will appear here.
+          <p>
+            Review orders placed through
+            the ShopNest store.
+          </p>
+        </Container>
+      </section>
+
+      <Container className="py-5">
+        <div className="admin-orders-toolbar">
+          <div>
+            <h3>Order Management</h3>
+
+            <p>
+              {orders.length}{' '}
+              {orders.length === 1
+                ? 'order'
+                : 'orders'}{' '}
+              received.
             </p>
-          </Card.Body>
-        </Card>
-      ) : (
-        <Card className="shadow-sm">
-          <Card.Body>
-            <div className="table-responsive">
-              <Table
-                hover
-                responsive
-                className="align-middle mb-0"
-              >
-                <thead>
-                  <tr>
-                    <th>Order ID</th>
-                    <th>Customer</th>
-                    <th>Items</th>
-                    <th>Total</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
+          </div>
 
-                <tbody>
-                  {orders.map((order) => (
-                    <tr key={order.id}>
-                      <td>
-                        #{order.id}
-                      </td>
+          <Button
+            variant="outline-dark"
+            onClick={() =>
+              navigate('/admin')
+            }
+          >
+            Dashboard
+          </Button>
+        </div>
 
-                      <td>
-                        <strong>
-                          {
-                            order.deliveryAddress
-                              .fullName
-                          }
-                        </strong>
+        {orders.length === 0 ? (
+          <div className="admin-empty-state">
+            <div>🧾</div>
 
-                        <small className="d-block text-muted">
-                          {
-                            order.deliveryAddress
-                              .phone
-                          }
-                        </small>
-                      </td>
+            <h3>No orders yet</h3>
 
-                      <td>
-                        {order.items.reduce(
-                          (total, item) =>
-                            total + item.quantity,
-                          0
-                        )}
-                      </td>
+            <p>
+              Customer orders will appear
+              here after checkout.
+            </p>
 
-                      <td>
-                        ₹
-                        {order.total.toLocaleString(
-                          'en-IN'
-                        )}
-                      </td>
-
-                      <td>
-                        {order.paymentMethod}
-                      </td>
-
-                      <td>
-                        <Badge bg="success">
-                          {order.status}
-                        </Badge>
-                      </td>
-
-                      <td>
-                        {order.orderDate}
-                      </td>
+            <Button
+              variant="warning"
+              onClick={() =>
+                navigate('/products')
+              }
+            >
+              View Store
+            </Button>
+          </div>
+        ) : (
+          <Card className="admin-table-card">
+            <Card.Body className="p-0">
+              <div className="table-responsive">
+                <Table
+                  hover
+                  className="admin-orders-table mb-0"
+                >
+                  <thead>
+                    <tr>
+                      <th>Order</th>
+                      <th>Customer</th>
+                      <th>Items</th>
+                      <th>Total</th>
+                      <th>Payment</th>
+                      <th>Status</th>
+                      <th>Date</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-          </Card.Body>
-        </Card>
-      )}
-    </Container>
+                  </thead>
+
+                  <tbody>
+                    {orders.map(
+                      (order) => (
+                        <tr key={order.id}>
+                          <td>
+                            <strong className="admin-order-id">
+                              #
+                              {order.id}
+                            </strong>
+                          </td>
+
+                          <td>
+                            <div className="admin-customer-cell">
+                              <strong>
+                                {
+                                  order
+                                    .deliveryAddress
+                                    .fullName
+                                }
+                              </strong>
+
+                              <small>
+                                {
+                                  order
+                                    .deliveryAddress
+                                    .phone
+                                }
+                              </small>
+                            </div>
+                          </td>
+
+                          <td>
+                            <span className="admin-order-items">
+                              {getTotalItems(
+                                order.items
+                              )}{' '}
+                              {getTotalItems(
+                                order.items
+                              ) === 1
+                                ? 'item'
+                                : 'items'}
+                            </span>
+                          </td>
+
+                          <td>
+                            <strong>
+                              ₹
+                              {order.total.toLocaleString(
+                                'en-IN'
+                              )}
+                            </strong>
+                          </td>
+
+                          <td>
+                            <span className="admin-payment-method">
+                              {
+                                order.paymentMethod
+                              }
+                            </span>
+                          </td>
+
+                          <td>
+                            <Badge bg="success">
+                              {order.status}
+                            </Badge>
+                          </td>
+
+                          <td>
+                            <span className="admin-order-date">
+                              {
+                                order.orderDate
+                              }
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+            </Card.Body>
+          </Card>
+        )}
+
+        {orders.length > 0 && (
+          <div className="admin-orders-note">
+            <span>ℹ️</span>
+
+            <p>
+              Order status management will
+              be connected to the backend
+              later. The current frontend
+              displays orders saved by the
+              ShopNest checkout flow.
+            </p>
+          </div>
+        )}
+      </Container>
+    </div>
   )
 }
 

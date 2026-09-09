@@ -1,6 +1,4 @@
-import {
-  useContext
-} from 'react'
+import { useContext } from 'react'
 
 import {
   Container,
@@ -25,144 +23,170 @@ function Navbar() {
   )
 
   return (
-    <>
+    <header>
       <BootstrapNavbar
-        bg="dark"
-        variant="dark"
         expand="lg"
-        className="py-2"
+        className="shopnest-navbar"
       >
-        <Container fluid>
+        <Container>
           <BootstrapNavbar.Brand
             as={Link}
             to="/"
-            className="fw-bold fs-3"
+            className="shopnest-brand"
           >
-            ShopNest
+            Shop<span>Nest</span>
           </BootstrapNavbar.Brand>
 
-          <div className="text-light me-3">
-            <small className="d-block">
-              Deliver to
-            </small>
+          <BootstrapNavbar.Toggle
+            aria-controls="shopnest-navbar"
+          />
 
-            <strong>
-              📍 Hyderabad
-            </strong>
-          </div>
-
-          <Form
-            className="d-flex flex-grow-1 mx-3"
+          <BootstrapNavbar.Collapse
+            id="shopnest-navbar"
           >
-            <Form.Control
-              type="search"
-              placeholder="Search ShopNest"
-            />
-          </Form>
+            <div className="delivery-location">
+              <span className="delivery-label">
+                Deliver to
+              </span>
 
-          <Nav className="align-items-lg-center">
-            <Nav.Link
-              as={Link}
-              to={
-                user
-                  ? '/profile'
-                  : '/login'
+              <strong>
+                📍 Hyderabad
+              </strong>
+            </div>
+
+            <Form
+              className="shopnest-search"
+              onSubmit={(event) =>
+                event.preventDefault()
               }
             >
-              <small className="d-block">
-                {user
-                  ? `Hello, ${user.name}`
-                  : 'Hello, Sign in'}
-              </small>
+              <Form.Control
+                type="search"
+                placeholder="Search for products..."
+                aria-label="Search products"
+              />
 
-              <strong>
-                Account
-              </strong>
-            </Nav.Link>
+              <button
+                type="submit"
+                className="search-button"
+                aria-label="Search"
+              >
+                🔍
+              </button>
+            </Form>
 
-            <Nav.Link
-              as={Link}
-              to="/orders"
-            >
-              <small className="d-block">
-                Returns
-              </small>
+            <Nav className="ms-auto shopnest-nav-links">
+              <Nav.Link
+                as={Link}
+                to={
+                  user
+                    ? '/profile'
+                    : '/login'
+                }
+                className="shopnest-nav-item"
+              >
+                <small>
+                  {user
+                    ? `Hello, ${user.name}`
+                    : 'Hello, sign in'}
+                </small>
 
-              <strong>
-                & Orders
-              </strong>
-            </Nav.Link>
+                <strong>
+                  Account
+                </strong>
+              </Nav.Link>
 
-            <Nav.Link
-              as={Link}
-              to="/admin"
-            >
-              <small className="d-block">
-                ShopNest
-              </small>
+              <Nav.Link
+                as={Link}
+                to="/orders"
+                className="shopnest-nav-item"
+              >
+                <small>
+                  Returns
+                </small>
 
-              <strong>
-                Admin
-              </strong>
-            </Nav.Link>
+                <strong>
+                  & Orders
+                </strong>
+              </Nav.Link>
 
-            <Nav.Link
-              as={Link}
-              to="/cart"
-            >
-              <strong>
-                🛒 Cart ({cartCount})
-              </strong>
-            </Nav.Link>
-          </Nav>
+              <Nav.Link
+                as={Link}
+                to="/admin"
+                className="shopnest-nav-item"
+              >
+                <small>
+                  ShopNest
+                </small>
+
+                <strong>
+                  Admin
+                </strong>
+              </Nav.Link>
+
+              <Nav.Link
+                as={Link}
+                to="/cart"
+                className="shopnest-cart-link"
+              >
+                <span className="cart-icon">
+                  🛒
+                </span>
+
+                <span>
+                  Cart
+                </span>
+
+                {cartCount > 0 && (
+                  <span className="cart-count">
+                    {cartCount}
+                  </span>
+                )}
+              </Nav.Link>
+            </Nav>
+          </BootstrapNavbar.Collapse>
         </Container>
       </BootstrapNavbar>
 
-      <Nav
-        className="
-          bg-secondary
-          px-3
-          py-2
-          gap-3
-        "
-      >
-        <Nav.Link
-          as={Link}
-          to="/products"
-          className="text-white"
-        >
-          All Products
-        </Nav.Link>
+      <nav className="category-navbar">
+        <Container className="category-nav-content">
+          <Link
+            to="/products"
+            className="category-link category-link-main"
+          >
+            ☰ All Products
+          </Link>
 
-        <Nav.Link
-          href="#"
-          className="text-white"
-        >
-          Electronics
-        </Nav.Link>
+          <Link
+            to="/products"
+            className="category-link"
+          >
+            Electronics
+          </Link>
 
-        <Nav.Link
-          href="#"
-          className="text-white"
-        >
-          Fashion
-        </Nav.Link>
+          <Link
+            to="/products"
+            className="category-link"
+          >
+            Fashion
+          </Link>
 
-        <Nav.Link
-          href="#"
-          className="text-white"
-        >
-          Home & Kitchen
-        </Nav.Link>
+          <Link
+            to="/products"
+            className="category-link"
+          >
+            Home & Kitchen
+          </Link>
 
-        <Nav.Link
-          href="#"
-          className="text-white"
-        >
-          Books
-        </Nav.Link>
-      </Nav>
-    </>
+          <Link
+            to="/products"
+            className="category-link"
+          >
+            Books
+          </Link>
+        </Container>
+      </nav>
+    </header>
   )
 }
 

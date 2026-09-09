@@ -12,40 +12,81 @@ import {
   Button,
   Alert
 } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom'
+
 import CartContext from '../context/CartContext'
 import OrderContext from '../context/OrderContext'
 
 function Checkout() {
-  const { cartItems, clearCart } = useContext(CartContext)
-  const { addOrder } = useContext(OrderContext)
+  const {
+    cartItems,
+    clearCart
+  } = useContext(CartContext)
+
+  const { addOrder } =
+    useContext(OrderContext)
+
   const navigate = useNavigate()
 
-  // Calculate final cart price
   const cartTotal = cartItems.reduce(
     (total, item) =>
       total + item.price * item.quantity,
     0
   )
 
-  // Calculate total number of items
   const totalItems = cartItems.reduce(
     (total, item) =>
       total + item.quantity,
     0
   )
 
-  // Checkout form data
-  const [fullName, setFullName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [address, setAddress] = useState('')
-  const [city, setCity] = useState('')
-  const [pinCode, setPinCode] = useState('')
+  const [fullName, setFullName] =
+    useState('')
 
-  // Default payment method
-  const [paymentMethod, setPaymentMethod] =
-    useState('Cash on Delivery')
-  const [error, setError] = useState('')
+  const [phone, setPhone] =
+    useState('')
+
+  const [address, setAddress] =
+    useState('')
+
+  const [city, setCity] =
+    useState('')
+
+  const [pinCode, setPinCode] =
+    useState('')
+
+  const [
+    paymentMethod,
+    setPaymentMethod
+  ] = useState('Cash on Delivery')
+
+  const [error, setError] =
+    useState('')
+
+  const handlePhoneChange = (event) => {
+    const value =
+      event.target.value.replace(
+        /\D/g,
+        ''
+      )
+
+    setPhone(value.slice(0, 10))
+  }
+
+  const handlePinChange = (event) => {
+    const value =
+      event.target.value.replace(
+        /\D/g,
+        ''
+      )
+
+    setPinCode(value.slice(0, 6))
+  }
+
   const handlePlaceOrder = () => {
     if (
       !fullName.trim() ||
@@ -54,330 +95,443 @@ function Checkout() {
       !city.trim() ||
       !pinCode.trim()
     ) {
-      setError('Please fill in all delivery details.')
+      setError(
+        'Please fill in all delivery details.'
+      )
       return
     }
 
-    if (phone.length !== 10) {
+    if (!/^\d{10}$/.test(phone)) {
       setError(
         'Please enter a valid 10-digit phone number.'
       )
       return
     }
 
-    if (pinCode.length !== 6) {
+    if (!/^\d{6}$/.test(pinCode)) {
       setError(
         'Please enter a valid 6-digit PIN code.'
       )
       return
     }
 
+    if (cartItems.length === 0) {
+      setError(
+        'Your cart is empty.'
+      )
+      return
+    }
+
     setError('')
 
-  const newOrder = {
-    id: Date.now(),
+    const newOrder = {
+      id: Date.now(),
 
-    items: cartItems.map((item) => ({
-      ...item
-    })),
+      items: cartItems.map(
+        (item) => ({
+          ...item
+        })
+      ),
 
-    total: cartTotal,
+      total: cartTotal,
 
-    deliveryAddress: {
-      fullName,
-      phone,
-      address,
-      city,
-      pinCode
-    },
+      deliveryAddress: {
+        fullName,
+        phone,
+        address,
+        city,
+        pinCode
+      },
 
-    paymentMethod,
+      paymentMethod,
 
-    status: 'Order Placed',
+      status: 'Order Placed',
 
-    orderDate: new Date().toLocaleString()
+      orderDate:
+        new Date().toLocaleString()
+    }
+
+    addOrder(newOrder)
+    clearCart()
+
+    navigate('/order-success')
   }
 
-  addOrder(newOrder)
+  if (cartItems.length === 0) {
+    return (
+      <div className="checkout-page">
+        <Container className="py-5">
+          <div className="checkout-empty-state">
+            <div className="checkout-empty-icon">
+              🛒
+            </div>
 
-  clearCart()
+            <h2>
+              Nothing to checkout
+            </h2>
 
-  navigate('/order-success')
+            <p>
+              Your cart is currently empty.
+              Add some products before
+              checking out.
+            </p>
+
+            <Button
+              variant="warning"
+              onClick={() =>
+                navigate('/products')
+              }
+            >
+              Browse Products
+            </Button>
+          </div>
+        </Container>
+      </div>
+    )
   }
+
   return (
-    <Container className="py-5">
-      <h1 className="mb-4">
-        Checkout
-      </h1>
+    <div className="checkout-page">
+      <section className="checkout-header">
+        <Container>
+          <Link
+            to="/cart"
+            className="checkout-back-link"
+          >
+            ← Back to Cart
+          </Link>
 
-      <Row className="g-4">
+          <h1>Checkout</h1>
 
-        {/* LEFT SIDE */}
-        <Col lg={8}>
+          <p>
+            Complete your delivery and
+            payment information.
+          </p>
+        </Container>
+      </section>
 
-          {/* DELIVERY ADDRESS */}
-          <Card className="shadow-sm mb-4">
-            <Card.Body className="p-4">
-              <h4 className="mb-3">
-                Delivery Address
-              </h4>
+      <Container className="py-5">
+        <Row className="g-4">
+          <Col lg={8}>
+            <Card className="checkout-card">
+              <Card.Body>
+                <div className="checkout-card-heading">
+                  <span className="checkout-step">
+                    1
+                  </span>
 
-              <Form>
-                {/* FULL NAME */}
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Full Name
-                  </Form.Label>
+                  <div>
+                    <h4>
+                      Delivery Address
+                    </h4>
 
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter your full name"
-                    value={fullName}
-                    onChange={(event) =>
-                      setFullName(event.target.value)
+                    <p>
+                      Where should we
+                      deliver your order?
+                    </p>
+                  </div>
+                </div>
+
+                <Form>
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      Full Name
+                    </Form.Label>
+
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={fullName}
+                      onChange={(event) =>
+                        setFullName(
+                          event.target.value
+                        )
+                      }
+                    />
+                  </Form.Group>
+
+                  <Row>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>
+                          Phone Number
+                        </Form.Label>
+
+                        <Form.Control
+                          type="tel"
+                          inputMode="numeric"
+                          placeholder="10-digit phone number"
+                          value={phone}
+                          onChange={
+                            handlePhoneChange
+                          }
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>
+                          PIN Code
+                        </Form.Label>
+
+                        <Form.Control
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="6-digit PIN code"
+                          value={pinCode}
+                          onChange={
+                            handlePinChange
+                          }
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      Address
+                    </Form.Label>
+
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      placeholder="House number, street, area"
+                      value={address}
+                      onChange={(event) =>
+                        setAddress(
+                          event.target.value
+                        )
+                      }
+                    />
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Form.Label>
+                      City
+                    </Form.Label>
+
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter city"
+                      value={city}
+                      onChange={(event) =>
+                        setCity(
+                          event.target.value
+                        )
+                      }
+                    />
+                  </Form.Group>
+                </Form>
+              </Card.Body>
+            </Card>
+
+            <Card className="checkout-card">
+              <Card.Body>
+                <div className="checkout-card-heading">
+                  <span className="checkout-step">
+                    2
+                  </span>
+
+                  <div>
+                    <h4>
+                      Payment Method
+                    </h4>
+
+                    <p>
+                      Choose how you want
+                      to pay.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="payment-options">
+                  {[
+                    {
+                      value:
+                        'Cash on Delivery',
+                      icon: '💵',
+                      description:
+                        'Pay when your order arrives'
+                    },
+                    {
+                      value: 'UPI',
+                      icon: '📱',
+                      description:
+                        'Pay using your UPI app'
+                    },
+                    {
+                      value:
+                        'Credit / Debit Card',
+                      icon: '💳',
+                      description:
+                        'Pay using your card'
                     }
-                  />
-                </Form.Group>
-
-                {/* PHONE NUMBER */}
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Phone Number
-                  </Form.Label>
-
-                  <Form.Control
-                    type="tel"
-                    placeholder="Enter your phone number"
-                    value={phone}
-                    onChange={(event) =>
-                      setPhone(event.target.value)
-                    }
-                  />
-                </Form.Group>
-
-                {/* ADDRESS */}
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Address
-                  </Form.Label>
-
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    placeholder="House number, street, area"
-                    value={address}
-                    onChange={(event) =>
-                      setAddress(event.target.value)
-                    }
-                  />
-                </Form.Group>
-
-                <Row>
-                  {/* CITY */}
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>
-                        City
-                      </Form.Label>
-
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter city"
-                        value={city}
-                        onChange={(event) =>
-                          setCity(event.target.value)
-                        }
-                      />
-                    </Form.Group>
-                  </Col>
-
-                  {/* PIN CODE */}
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>
-                        PIN Code
-                      </Form.Label>
-
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter PIN code"
-                        value={pinCode}
-                        onChange={(event) =>
-                          setPinCode(event.target.value)
-                        }
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-              </Form>
-            </Card.Body>
-          </Card>
-
-          {/* PAYMENT METHOD */}
-          <Card className="shadow-sm">
-            <Card.Body className="p-4">
-              <h4 className="mb-3">
-                Payment Method
-              </h4>
-
-              <Form.Check
-                type="radio"
-                name="payment"
-                label="Cash on Delivery"
-                value="Cash on Delivery"
-                checked={
-                  paymentMethod ===
-                  'Cash on Delivery'
-                }
-                onChange={(event) =>
-                  setPaymentMethod(
-                    event.target.value
-                  )
-                }
-              />
-
-              <Form.Check
-                type="radio"
-                name="payment"
-                label="UPI"
-                value="UPI"
-                checked={
-                  paymentMethod === 'UPI'
-                }
-                onChange={(event) =>
-                  setPaymentMethod(
-                    event.target.value
-                  )
-                }
-                className="mt-2"
-              />
-
-              <Form.Check
-                type="radio"
-                name="payment"
-                label="Credit / Debit Card"
-                value="Credit / Debit Card"
-                checked={
-                  paymentMethod ===
-                  'Credit / Debit Card'
-                }
-                onChange={(event) =>
-                  setPaymentMethod(
-                    event.target.value
-                  )
-                }
-                className="mt-2"
-              />
-            </Card.Body>
-          </Card>
-        </Col>
-
-        {/* RIGHT SIDE */}
-        <Col lg={4}>
-          <Card className="shadow-sm">
-            <Card.Body className="p-4">
-              <h4>
-                Order Summary
-              </h4>
-
-              <hr />
-
-              {cartItems.length === 0 ? (
-                <p className="text-muted">
-                  Your cart is empty.
-                </p>
-              ) : (
-                <>
-                  {/* PRODUCTS */}
-                  {cartItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="
-                        d-flex
-                        justify-content-between
-                        mb-3
-                      "
+                  ].map((method) => (
+                    <label
+                      key={method.value}
+                      className={`payment-option ${
+                        paymentMethod ===
+                        method.value
+                          ? 'payment-option-selected'
+                          : ''
+                      }`}
                     >
-                      <div>
-                        <strong>
-                          {item.name}
-                        </strong>
+                      <Form.Check
+                        type="radio"
+                        name="payment"
+                        value={method.value}
+                        checked={
+                          paymentMethod ===
+                          method.value
+                        }
+                        onChange={(event) =>
+                          setPaymentMethod(
+                            event.target.value
+                          )
+                        }
+                      />
 
-                        <div className="text-muted">
-                          Qty: {item.quantity}
-                        </div>
-                      </div>
+                      <span className="payment-icon">
+                        {method.icon}
+                      </span>
 
                       <span>
-                        ₹
-                        {(
-                          item.price *
-                          item.quantity
-                        ).toLocaleString(
-                          'en-IN'
-                        )}
+                        <strong>
+                          {method.value}
+                        </strong>
+
+                        <small>
+                          {method.description}
+                        </small>
                       </span>
-                    </div>
+                    </label>
                   ))}
+                </div>
 
-                  <hr />
+                <div className="checkout-demo-note">
+                  These payment methods are
+                  currently frontend UI only.
+                  Real payment processing will
+                  be connected later.
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
 
-                  {/* TOTAL ITEMS */}
-                  <div
-                    className="
-                      d-flex
-                      justify-content-between
-                      mb-2
-                    "
-                  >
-                    <span>
-                      Items
-                    </span>
+          <Col lg={4}>
+            <Card className="checkout-summary-card">
+              <Card.Body>
+                <h4>
+                  Order Summary
+                </h4>
 
-                    <span>
-                      {totalItems}
-                    </span>
-                  </div>
+                <div className="checkout-products">
+                  {cartItems.map(
+                    (item) => (
+                      <div
+                        key={item.id}
+                        className="checkout-product"
+                      >
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                        />
 
-                  {/* TOTAL PRICE */}
-                  <div
-                    className="
-                      d-flex
-                      justify-content-between
-                      align-items-center
-                    "
-                  >
-                    <h5>
-                      Total
-                    </h5>
+                        <div className="checkout-product-info">
+                          <strong>
+                            {item.name}
+                          </strong>
 
-                    <h4 className="text-danger">
-                      ₹
-                      {cartTotal.toLocaleString(
-                        'en-IN'
-                      )}
-                    </h4>
-                  </div>
-                  {error && (
-                    <Alert variant="danger">
-                      {error}
-                    </Alert>
+                          <span>
+                            Qty: {item.quantity}
+                          </span>
+                        </div>
+
+                        <strong>
+                          ₹
+                          {(
+                            item.price *
+                            item.quantity
+                          ).toLocaleString(
+                            'en-IN'
+                          )}
+                        </strong>
+                      </div>
+                    )
                   )}
-                  {/* PLACE ORDER */}
-                  <Button
-                    variant="warning"
-                    className="w-100 mt-3"
-                    onClick={handlePlaceOrder}
+                </div>
+
+                <div className="checkout-summary-divider" />
+
+                <div className="checkout-summary-row">
+                  <span>
+                    Items ({totalItems})
+                  </span>
+
+                  <span>
+                    ₹
+                    {cartTotal.toLocaleString(
+                      'en-IN'
+                    )}
+                  </span>
+                </div>
+
+                <div className="checkout-summary-row">
+                  <span>
+                    Delivery
+                  </span>
+
+                  <span className="checkout-free">
+                    FREE
+                  </span>
+                </div>
+
+                <div className="checkout-summary-divider" />
+
+                <div className="checkout-total">
+                  <span>
+                    Order Total
+                  </span>
+
+                  <strong>
+                    ₹
+                    {cartTotal.toLocaleString(
+                      'en-IN'
+                    )}
+                  </strong>
+                </div>
+
+                {error && (
+                  <Alert
+                    variant="danger"
+                    className="mt-3 mb-0"
                   >
-                    Place Order
-                  </Button>
-                </>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                    {error}
+                  </Alert>
+                )}
+
+                <Button
+                  variant="warning"
+                  size="lg"
+                  className="w-100 mt-4"
+                  onClick={
+                    handlePlaceOrder
+                  }
+                >
+                  Place Order
+                </Button>
+
+                <p className="checkout-secure-note">
+                  🔒 Your checkout information
+                  is handled securely.
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   )
 }
 

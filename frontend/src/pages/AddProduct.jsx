@@ -1,7 +1,4 @@
-import {
-  useContext,
-  useState
-} from 'react'
+import { useContext, useState } from 'react'
 
 import {
   Container,
@@ -12,30 +9,41 @@ import {
   Col
 } from 'react-bootstrap'
 
-import { useNavigate } from 'react-router-dom'
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom'
+
 import ProductContext from '../context/ProductContext'
 
 function AddProduct() {
-  const { addProduct } = useContext(ProductContext)
+  const { addProduct } =
+    useContext(ProductContext)
+
   const navigate = useNavigate()
 
   const [name, setName] = useState('')
-  const [category, setCategory] = useState('')
+  const [category, setCategory] =
+    useState('Electronics')
   const [price, setPrice] = useState('')
-  const [rating, setRating] = useState('')
+  const [rating, setRating] =
+    useState('')
   const [image, setImage] = useState('')
-  const [inStock, setInStock] = useState(true)
+  const [inStock, setInStock] =
+    useState(true)
 
   const handleSubmit = (event) => {
     event.preventDefault()
 
     const newProduct = {
       id: Date.now(),
-      name,
+      name: name.trim(),
       category,
       price: Number(price),
       rating: Number(rating),
-      image,
+      image:
+        image.trim() ||
+        'https://placehold.co/300x250?text=ShopNest+Product',
       inStock
     }
 
@@ -45,167 +53,212 @@ function AddProduct() {
   }
 
   return (
-    <Container className="py-5">
-      <Card
-        className="shadow-sm mx-auto"
-        style={{
-          maxWidth: '750px'
-        }}
-      >
-        <Card.Body className="p-4">
-          <h2 className="mb-4">
-            Add Product
-          </h2>
+    <div className="admin-page">
+      <section className="admin-header">
+        <Container>
+          <Link
+            to="/admin/products"
+            className="admin-back-link"
+          >
+            ← Manage Products
+          </Link>
 
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Product Name
-              </Form.Label>
+          <h1>Add Product</h1>
 
-              <Form.Control
-                type="text"
-                placeholder="Enter product name"
-                value={name}
-                onChange={(event) =>
-                  setName(event.target.value)
-                }
-                required
-              />
-            </Form.Group>
+          <p>
+            Add a new product to the
+            ShopNest catalog.
+          </p>
+        </Container>
+      </section>
 
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Category
-                  </Form.Label>
+      <Container className="py-5">
+        <Card className="admin-form-card">
+          <Card.Body>
+            <div className="admin-form-heading">
+              <h3>Product Information</h3>
 
-                  <Form.Select
-                    value={category}
-                    onChange={(event) =>
-                      setCategory(event.target.value)
-                    }
-                    required
-                  >
-                    <option value="">
-                      Select category
-                    </option>
+              <p>
+                Enter the information that
+                customers will see in the store.
+              </p>
+            </div>
 
-                    <option value="Electronics">
-                      Electronics
-                    </option>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-4">
+                <Form.Label>
+                  Product Name
+                </Form.Label>
 
-                    <option value="Fashion">
-                      Fashion
-                    </option>
+                <Form.Control
+                  type="text"
+                  placeholder="Example: Wireless Keyboard"
+                  value={name}
+                  onChange={(event) =>
+                    setName(event.target.value)
+                  }
+                  required
+                />
+              </Form.Group>
 
-                    <option value="Home & Kitchen">
-                      Home & Kitchen
-                    </option>
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-4">
+                    <Form.Label>
+                      Category
+                    </Form.Label>
 
-                    <option value="Books">
-                      Books
-                    </option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
+                    <Form.Select
+                      value={category}
+                      onChange={(event) =>
+                        setCategory(
+                          event.target.value
+                        )
+                      }
+                    >
+                      <option>
+                        Electronics
+                      </option>
 
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Price
-                  </Form.Label>
+                      <option>
+                        Fashion
+                      </option>
 
-                  <Form.Control
-                    type="number"
-                    placeholder="Enter price"
-                    value={price}
-                    onChange={(event) =>
-                      setPrice(event.target.value)
-                    }
-                    min="0"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
+                      <option>
+                        Home & Kitchen
+                      </option>
 
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Rating
-                  </Form.Label>
+                      <option>
+                        Books
+                      </option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
 
-                  <Form.Control
-                    type="number"
-                    min="0"
-                    max="5"
-                    step="0.1"
-                    placeholder="Example: 4.5"
-                    value={rating}
-                    onChange={(event) =>
-                      setRating(event.target.value)
-                    }
-                    required
-                  />
-                </Form.Group>
-              </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-4">
+                    <Form.Label>
+                      Stock Status
+                    </Form.Label>
 
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Stock Status
-                  </Form.Label>
+                    <Form.Select
+                      value={
+                        inStock
+                          ? 'true'
+                          : 'false'
+                      }
+                      onChange={(event) =>
+                        setInStock(
+                          event.target.value ===
+                            'true'
+                        )
+                      }
+                    >
+                      <option value="true">
+                        In Stock
+                      </option>
 
-                  <Form.Select
-                    value={inStock ? 'true' : 'false'}
-                    onChange={(event) =>
-                      setInStock(
-                        event.target.value === 'true'
-                      )
-                    }
-                  >
-                    <option value="true">
-                      In Stock
-                    </option>
+                      <option value="false">
+                        Out of Stock
+                      </option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
 
-                    <option value="false">
-                      Out of Stock
-                    </option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-4">
+                    <Form.Label>
+                      Price (₹)
+                    </Form.Label>
 
-            <Form.Group className="mb-4">
-              <Form.Label>
-                Product Image URL
-              </Form.Label>
+                    <Form.Control
+                      type="number"
+                      min="1"
+                      placeholder="2499"
+                      value={price}
+                      onChange={(event) =>
+                        setPrice(
+                          event.target.value
+                        )
+                      }
+                      required
+                    />
+                  </Form.Group>
+                </Col>
 
-              <Form.Control
-                type="text"
-                placeholder="Enter product image URL"
-                value={image}
-                onChange={(event) =>
-                  setImage(event.target.value)
-                }
-                required
-              />
-            </Form.Group>
+                <Col md={6}>
+                  <Form.Group className="mb-4">
+                    <Form.Label>
+                      Rating
+                    </Form.Label>
 
-            <Button
-              variant="warning"
-              type="submit"
-              className="w-100"
-            >
-              Add Product
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-    </Container>
+                    <Form.Control
+                      type="number"
+                      min="0"
+                      max="5"
+                      step="0.1"
+                      placeholder="4.5"
+                      value={rating}
+                      onChange={(event) =>
+                        setRating(
+                          event.target.value
+                        )
+                      }
+                      required
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Form.Group className="mb-4">
+                <Form.Label>
+                  Product Image URL
+                </Form.Label>
+
+                <Form.Control
+                  type="url"
+                  placeholder="https://example.com/product.jpg"
+                  value={image}
+                  onChange={(event) =>
+                    setImage(
+                      event.target.value
+                    )
+                  }
+                />
+
+                <Form.Text>
+                  Leave this blank to use a
+                  placeholder product image.
+                </Form.Text>
+              </Form.Group>
+
+              <div className="admin-form-actions">
+                <Button
+                  type="submit"
+                  variant="warning"
+                >
+                  Add Product
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline-secondary"
+                  onClick={() =>
+                    navigate(
+                      '/admin/products'
+                    )
+                  }
+                >
+                  Cancel
+                </Button>
+              </div>
+            </Form>
+          </Card.Body>
+        </Card>
+      </Container>
+    </div>
   )
 }
 
