@@ -3196,3 +3196,16 @@ h6 {
     width: 100%;
   }
 }
+/* Mobile navbar hamburger visibility */
+
+.shopnest-navbar .navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.shopnest-navbar .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+.shopnest-navbar .navbar-toggler:focus {
+  box-shadow: 0 0 0 0.15rem rgba(245, 158, 11, 0.35);
+}

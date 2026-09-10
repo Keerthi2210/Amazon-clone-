@@ -19,6 +19,7 @@ import {
 
 import ProductContext from '../context/ProductContext'
 import CartContext from '../context/CartContext'
+import NotificationContext from '../context/NotificationContext'
 
 function ProductDetails() {
   const { id } = useParams()
@@ -28,6 +29,9 @@ function ProductDetails() {
 
   const { addToCart } =
     useContext(CartContext)
+
+  const { showNotification } =
+    useContext(NotificationContext)
 
   const [added, setAdded] =
     useState(false)
@@ -39,6 +43,10 @@ function ProductDetails() {
 
   const handleAddToCart = () => {
     addToCart(product)
+
+    showNotification(
+      `${product.name} added to cart`
+    )
 
     setAdded(true)
 

@@ -14,12 +14,16 @@ import {
 } from 'react-router-dom'
 
 import ProductContext from '../context/ProductContext'
+import NotificationContext from '../context/NotificationContext'
 
 function AdminProducts() {
   const {
     products,
     deleteProduct
   } = useContext(ProductContext)
+
+  const { showNotification } =
+    useContext(NotificationContext)
 
   const navigate = useNavigate()
 
@@ -31,6 +35,10 @@ function AdminProducts() {
 
     if (shouldDelete) {
       deleteProduct(product.id)
+
+      showNotification(
+        'Product deleted successfully'
+      )
     }
   }
 
@@ -131,25 +139,18 @@ function AdminProducts() {
                             <div className="admin-product-cell">
                               <div className="admin-product-image">
                                 <img
-                                  src={
-                                    product.image
-                                  }
-                                  alt={
-                                    product.name
-                                  }
+                                  src={product.image}
+                                  alt={product.name}
                                 />
                               </div>
 
                               <div>
                                 <strong>
-                                  {
-                                    product.name
-                                  }
+                                  {product.name}
                                 </strong>
 
                                 <small>
-                                  ID:{' '}
-                                  {product.id}
+                                  ID: {product.id}
                                 </small>
                               </div>
                             </div>
@@ -172,8 +173,7 @@ function AdminProducts() {
 
                           <td>
                             <span className="admin-rating">
-                              ★{' '}
-                              {product.rating}
+                              ★ {product.rating}
                             </span>
                           </td>
 

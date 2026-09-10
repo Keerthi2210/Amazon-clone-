@@ -1,4 +1,7 @@
-import { useContext, useState } from 'react'
+import {
+  useContext,
+  useState
+} from 'react'
 
 import {
   Container,
@@ -15,10 +18,14 @@ import {
 } from 'react-router-dom'
 
 import ProductContext from '../context/ProductContext'
+import NotificationContext from '../context/NotificationContext'
 
 function AddProduct() {
   const { addProduct } =
     useContext(ProductContext)
+
+  const { showNotification } =
+    useContext(NotificationContext)
 
   const navigate = useNavigate()
 
@@ -26,8 +33,7 @@ function AddProduct() {
   const [category, setCategory] =
     useState('Electronics')
   const [price, setPrice] = useState('')
-  const [rating, setRating] =
-    useState('')
+  const [rating, setRating] = useState('')
   const [image, setImage] = useState('')
   const [inStock, setInStock] =
     useState(true)
@@ -48,6 +54,10 @@ function AddProduct() {
     }
 
     addProduct(newProduct)
+
+    showNotification(
+      'Product added successfully'
+    )
 
     navigate('/admin/products')
   }
@@ -149,8 +159,7 @@ function AddProduct() {
                       }
                       onChange={(event) =>
                         setInStock(
-                          event.target.value ===
-                            'true'
+                          event.target.value === 'true'
                         )
                       }
                     >

@@ -19,6 +19,7 @@ import {
 } from 'react-router-dom'
 
 import ProductContext from '../context/ProductContext'
+import NotificationContext from '../context/NotificationContext'
 
 function EditProduct() {
   const { id } = useParams()
@@ -27,6 +28,9 @@ function EditProduct() {
     products,
     updateProduct
   } = useContext(ProductContext)
+
+  const { showNotification } =
+    useContext(NotificationContext)
 
   const navigate = useNavigate()
 
@@ -106,6 +110,10 @@ function EditProduct() {
     }
 
     updateProduct(updatedProduct)
+
+    showNotification(
+      'Product updated successfully'
+    )
 
     navigate('/admin/products')
   }
@@ -211,8 +219,7 @@ function EditProduct() {
                       }
                       onChange={(event) =>
                         setInStock(
-                          event.target.value ===
-                            'true'
+                          event.target.value === 'true'
                         )
                       }
                     >

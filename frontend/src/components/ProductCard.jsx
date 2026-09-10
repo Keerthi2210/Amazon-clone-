@@ -12,16 +12,25 @@ import {
 import { Link } from 'react-router-dom'
 
 import CartContext from '../context/CartContext'
+import NotificationContext from '../context/NotificationContext'
 
 function ProductCard({ product }) {
   const { addToCart } =
     useContext(CartContext)
+
+  const { showNotification } =
+    useContext(NotificationContext)
 
   const [added, setAdded] =
     useState(false)
 
   const handleAddToCart = () => {
     addToCart(product)
+
+    showNotification(
+      `${product.name} added to cart`
+    )
+
     setAdded(true)
 
     setTimeout(() => {
