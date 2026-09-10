@@ -72,6 +72,7 @@ function App() {
           path="/admin/orders"
           element={<AdminOrders />}
         />
+        
       </Routes>
     </>
   )

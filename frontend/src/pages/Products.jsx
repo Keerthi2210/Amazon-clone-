@@ -12,6 +12,10 @@ import {
   Card
 } from 'react-bootstrap'
 
+import {
+  useSearchParams
+} from 'react-router-dom'
+
 import ProductContext from '../context/ProductContext'
 import ProductCard from '../components/ProductCard'
 
@@ -19,11 +23,14 @@ function Products() {
   const { products } =
     useContext(ProductContext)
 
-  const [selectedCategory, setSelectedCategory] =
-    useState('All')
+  const [searchParams, setSearchParams] =
+    useSearchParams()
 
-  const [searchTerm, setSearchTerm] =
-    useState('')
+  const searchTerm =
+    searchParams.get('search') || ''
+
+  const selectedCategory =
+    searchParams.get('category') || 'All'
 
   const [sortOption, setSortOption] =
     useState('default')
@@ -38,6 +45,23 @@ function Products() {
     'Home & Kitchen',
     'Books'
   ]
+
+  const updateUrlParams = ({
+    search = searchTerm,
+    category = selectedCategory
+  }) => {
+    const params = {}
+
+    if (search.trim()) {
+      params.search = search
+    }
+
+    if (category !== 'All') {
+      params.category = category
+    }
+
+    setSearchParams(params)
+  }
 
   const filteredProducts =
     products.filter((product) => {
@@ -110,11 +134,28 @@ function Products() {
     )
   }
 
+  const handleSearchChange = (
+    event
+  ) => {
+    updateUrlParams({
+      search: event.target.value,
+      category: selectedCategory
+    })
+  }
+
+  const handleCategoryChange = (
+    category
+  ) => {
+    updateUrlParams({
+      search: searchTerm,
+      category
+    })
+  }
+
   const resetFilters = () => {
-    setSelectedCategory('All')
-    setSearchTerm('')
     setSortOption('default')
     setPriceFilter('all')
+    setSearchParams({})
   }
 
   return (
@@ -152,12 +193,9 @@ function Products() {
               </div>
 
               <span className="product-result-count">
-                {
-                  sortedProducts.length
-                }{' '}
+                {sortedProducts.length}{' '}
                 product
-                {sortedProducts.length !==
-                1
+                {sortedProducts.length !== 1
                   ? 's'
                   : ''}
               </span>
@@ -167,10 +205,8 @@ function Products() {
               type="search"
               placeholder="Search by product name..."
               value={searchTerm}
-              onChange={(event) =>
-                setSearchTerm(
-                  event.target.value
-                )
+              onChange={
+                handleSearchChange
               }
               className="product-search-input"
             />
@@ -187,7 +223,7 @@ function Products() {
                         : 'outline-dark'
                     }
                     onClick={() =>
-                      setSelectedCategory(
+                      handleCategoryChange(
                         category
                       )
                     }

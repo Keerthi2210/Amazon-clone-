@@ -184,7 +184,7 @@ function ProductDetails() {
 
                 <div>
                   <span>✓</span>
-                  Secure shopping
+                  Easy shopping experience
                 </div>
               </div>
 

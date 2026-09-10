@@ -125,7 +125,7 @@ function Checkout() {
     setError('')
 
     const newOrder = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
 
       items: cartItems.map(
         (item) => ({
@@ -523,8 +523,7 @@ function Checkout() {
                 </Button>
 
                 <p className="checkout-secure-note">
-                  🔒 Your checkout information
-                  is handled securely.
+                  This checkout is part of the ShopNest demo experience.
                 </p>
               </Card.Body>
             </Card>

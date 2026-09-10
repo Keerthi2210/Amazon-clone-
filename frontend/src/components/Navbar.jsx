@@ -1,4 +1,7 @@
-import { useContext } from 'react'
+import {
+  useContext,
+  useState
+} from 'react'
 
 import {
   Container,
@@ -7,7 +10,10 @@ import {
   Navbar as BootstrapNavbar
 } from 'react-bootstrap'
 
-import { Link } from 'react-router-dom'
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom'
 
 import CartContext from '../context/CartContext'
 import AuthContext from '../context/AuthContext'
@@ -16,11 +22,34 @@ function Navbar() {
   const { cartItems } = useContext(CartContext)
   const { user } = useContext(AuthContext)
 
+  const [searchTerm, setSearchTerm] =
+    useState('')
+
+  const navigate = useNavigate()
+
   const cartCount = cartItems.reduce(
     (total, item) =>
       total + item.quantity,
     0
   )
+
+  const handleSearch = (event) => {
+    event.preventDefault()
+
+    const trimmedSearch =
+      searchTerm.trim()
+
+    if (!trimmedSearch) {
+      navigate('/products')
+      return
+    }
+
+    navigate(
+      `/products?search=${encodeURIComponent(
+        trimmedSearch
+      )}`
+    )
+  }
 
   return (
     <header>
@@ -56,14 +85,18 @@ function Navbar() {
 
             <Form
               className="shopnest-search"
-              onSubmit={(event) =>
-                event.preventDefault()
-              }
+              onSubmit={handleSearch}
             >
               <Form.Control
                 type="search"
                 placeholder="Search for products..."
                 aria-label="Search products"
+                value={searchTerm}
+                onChange={(event) =>
+                  setSearchTerm(
+                    event.target.value
+                  )
+                }
               />
 
               <button
@@ -158,28 +191,28 @@ function Navbar() {
           </Link>
 
           <Link
-            to="/products"
+            to="/products?category=Electronics"
             className="category-link"
           >
             Electronics
           </Link>
 
           <Link
-            to="/products"
+            to="/products?category=Fashion"
             className="category-link"
           >
             Fashion
           </Link>
 
           <Link
-            to="/products"
+            to="/products?category=Home%20%26%20Kitchen"
             className="category-link"
           >
             Home & Kitchen
           </Link>
 
           <Link
-            to="/products"
+            to="/products?category=Books"
             className="category-link"
           >
             Books
