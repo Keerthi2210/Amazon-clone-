@@ -9,7 +9,8 @@ import {
   Form,
   Button,
   Row,
-  Col
+  Col,
+  Alert
 } from 'react-bootstrap'
 
 import {
@@ -38,28 +39,45 @@ function AddProduct() {
   const [inStock, setInStock] =
     useState(true)
 
-  const handleSubmit = (event) => {
+  const [submitting, setSubmitting] =
+    useState(false)
+
+  const [error, setError] =
+    useState('')
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
-    const newProduct = {
-      id: Date.now(),
-      name: name.trim(),
-      category,
-      price: Number(price),
-      rating: Number(rating),
-      image:
-        image.trim() ||
-        'https://placehold.co/300x250?text=ShopNest+Product',
-      inStock
+    try {
+      setSubmitting(true)
+      setError('')
+
+      const newProduct = {
+        name: name.trim(),
+        category,
+        price: Number(price),
+        rating: Number(rating),
+        image:
+          image.trim() ||
+          'https://placehold.co/300x250?text=ShopNest+Product',
+        inStock
+      }
+
+      await addProduct(newProduct)
+
+      showNotification(
+        'Product added successfully'
+      )
+
+      navigate('/admin/products')
+    } catch (error) {
+      setError(
+        error.message ||
+          'Failed to add product'
+      )
+    } finally {
+      setSubmitting(false)
     }
-
-    addProduct(newProduct)
-
-    showNotification(
-      'Product added successfully'
-    )
-
-    navigate('/admin/products')
   }
 
   return (
@@ -93,6 +111,12 @@ function AddProduct() {
                 customers will see in the store.
               </p>
             </div>
+
+            {error && (
+              <Alert variant="danger">
+                {error}
+              </Alert>
+            )}
 
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-4">
@@ -159,7 +183,8 @@ function AddProduct() {
                       }
                       onChange={(event) =>
                         setInStock(
-                          event.target.value === 'true'
+                          event.target.value ===
+                            'true'
                         )
                       }
                     >
@@ -247,13 +272,17 @@ function AddProduct() {
                 <Button
                   type="submit"
                   variant="warning"
+                  disabled={submitting}
                 >
-                  Add Product
+                  {submitting
+                    ? 'Adding Product...'
+                    : 'Add Product'}
                 </Button>
 
                 <Button
                   type="button"
                   variant="outline-secondary"
+                  disabled={submitting}
                   onClick={() =>
                     navigate(
                       '/admin/products'

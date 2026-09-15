@@ -41,20 +41,31 @@ function ProductDetails() {
       item.id === Number(id)
   )
 
-  const handleAddToCart = () => {
-    addToCart(product)
+  const handleAddToCart = async () => {
+    try {
+      await addToCart(product)
 
-    showNotification(
-      `${product.name} added to cart`
-    )
+      showNotification(
+        `${product.name} added to cart`
+      )
 
-    setAdded(true)
+      setAdded(true)
 
-    setTimeout(() => {
-      setAdded(false)
-    }, 1200)
+      setTimeout(() => {
+        setAdded(false)
+      }, 1200)
+    } catch (error) {
+      showNotification(
+        error.message ||
+          'Failed to add product to cart'
+      )
+
+      console.error(
+        'Add to cart error:',
+        error
+      )
+    }
   }
-
   if (!product) {
     return (
       <Container className="py-5">

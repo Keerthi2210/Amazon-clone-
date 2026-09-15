@@ -2,6 +2,7 @@ package com.shopnest.backend.service;
 
 import com.shopnest.backend.dto.LoginRequest;
 import com.shopnest.backend.dto.LoginResponse;
+import com.shopnest.backend.dto.RegisterRequest;
 import com.shopnest.backend.model.User;
 import com.shopnest.backend.repository.UserRepository;
 import com.shopnest.backend.security.JwtUtil;
@@ -55,6 +56,57 @@ public class AuthService {
                 user.getName(),
                 user.getEmail(),
                 user.getRole(),
+                token
+        );
+    }
+
+    public LoginResponse register(
+            RegisterRequest registerRequest
+    ) {
+
+        if (
+                userRepository
+                        .findByEmail(
+                                registerRequest.getEmail()
+                        )
+                        .isPresent()
+        ) {
+            throw new RuntimeException(
+                    "Email already registered"
+            );
+        }
+
+        User user = new User();
+
+        user.setName(
+                registerRequest.getName()
+        );
+
+        user.setEmail(
+                registerRequest.getEmail()
+        );
+
+        user.setPassword(
+                passwordEncoder.encode(
+                        registerRequest.getPassword()
+                )
+        );
+
+        user.setRole("USER");
+
+        User savedUser =
+                userRepository.save(user);
+
+        String token = jwtUtil.generateToken(
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
+
+        return new LoginResponse(
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail(),
+                savedUser.getRole(),
                 token
         );
     }

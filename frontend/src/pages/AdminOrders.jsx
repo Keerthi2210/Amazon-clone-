@@ -1,11 +1,16 @@
-import { useContext } from 'react'
+import {
+  useEffect,
+  useState
+} from 'react'
 
 import {
   Container,
   Card,
   Table,
   Badge,
-  Button
+  Button,
+  Alert,
+  Spinner
 } from 'react-bootstrap'
 
 import {
@@ -13,19 +18,81 @@ import {
   useNavigate
 } from 'react-router-dom'
 
-import OrderContext from '../context/OrderContext'
-
 function AdminOrders() {
-  const { orders } =
-    useContext(OrderContext)
+  const [orders, setOrders] =
+    useState([])
+
+  const [loading, setLoading] =
+    useState(true)
+
+  const [error, setError] =
+    useState('')
 
   const navigate = useNavigate()
 
-  const getTotalItems = (items) => {
+  useEffect(() => {
+    const fetchAllOrders = async () => {
+      try {
+        setLoading(true)
+        setError('')
+
+        const token =
+          localStorage.getItem(
+            'shopnest-token'
+          )
+
+        const response = await fetch(
+          'http://localhost:8080/api/orders',
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`
+            }
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error(
+            'Failed to load customer orders'
+          )
+        }
+
+        const data =
+          await response.json()
+
+        setOrders(data)
+      } catch (error) {
+        setError(
+          error.message ||
+            'Failed to load customer orders'
+        )
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAllOrders()
+  }, [])
+
+  const getTotalItems = (items = []) => {
     return items.reduce(
       (total, item) =>
         total + item.quantity,
       0
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="admin-page">
+        <Container className="py-5 text-center">
+          <Spinner animation="border" />
+
+          <p className="mt-3">
+            Loading customer orders...
+          </p>
+        </Container>
+      </div>
     )
   }
 
@@ -50,6 +117,12 @@ function AdminOrders() {
       </section>
 
       <Container className="py-5">
+        {error && (
+          <Alert variant="danger">
+            {error}
+          </Alert>
+        )}
+
         <div className="admin-orders-toolbar">
           <div>
             <h3>Order Management</h3>
@@ -104,7 +177,7 @@ function AdminOrders() {
                   <thead>
                     <tr>
                       <th>Order</th>
-                      <th>Customer</th>
+                      <th>User</th>
                       <th>Items</th>
                       <th>Total</th>
                       <th>Payment</th>
@@ -119,27 +192,18 @@ function AdminOrders() {
                         <tr key={order.id}>
                           <td>
                             <strong className="admin-order-id">
-                              #
-                              {order.id}
+                              #{order.id}
                             </strong>
                           </td>
 
                           <td>
                             <div className="admin-customer-cell">
                               <strong>
-                                {
-                                  order
-                                    .deliveryAddress
-                                    .fullName
-                                }
+                                User #{order.userId}
                               </strong>
 
                               <small>
-                                {
-                                  order
-                                    .deliveryAddress
-                                    .phone
-                                }
+                                {order.shippingAddress}
                               </small>
                             </div>
                           </td>
@@ -160,7 +224,9 @@ function AdminOrders() {
                           <td>
                             <strong>
                               ₹
-                              {order.total.toLocaleString(
+                              {Number(
+                                order.totalAmount
+                              ).toLocaleString(
                                 'en-IN'
                               )}
                             </strong>
@@ -168,9 +234,7 @@ function AdminOrders() {
 
                           <td>
                             <span className="admin-payment-method">
-                              {
-                                order.paymentMethod
-                              }
+                              {order.paymentMethod}
                             </span>
                           </td>
 
@@ -182,9 +246,8 @@ function AdminOrders() {
 
                           <td>
                             <span className="admin-order-date">
-                              {
-                                order.orderDate
-                              }
+                              {order.orderDate ||
+                                '—'}
                             </span>
                           </td>
                         </tr>
@@ -195,20 +258,6 @@ function AdminOrders() {
               </div>
             </Card.Body>
           </Card>
-        )}
-
-        {orders.length > 0 && (
-          <div className="admin-orders-note">
-            <span>ℹ️</span>
-
-            <p>
-              Order status management will
-              be connected to the backend
-              later. The current frontend
-              displays orders saved by the
-              ShopNest checkout flow.
-            </p>
-          </div>
         )}
       </Container>
     </div>

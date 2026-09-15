@@ -1,73 +1,182 @@
 import {
   createContext,
+  useEffect,
   useState
 } from 'react'
-
-import initialProducts from '../data/products'
 
 const ProductContext = createContext()
 
 export function ProductProvider({ children }) {
-  const [products, setProducts] = useState(() => {
-    const savedProducts =
-      localStorage.getItem('shopnest-products')
+  const [products, setProducts] =
+    useState([])
 
-    if (savedProducts) {
-      return JSON.parse(savedProducts)
+  const [loading, setLoading] =
+    useState(true)
+
+  const [error, setError] =
+    useState('')
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true)
+      setError('')
+
+      const response = await fetch(
+        'http://localhost:8080/api/products'
+      )
+
+      if (!response.ok) {
+        throw new Error(
+          'Failed to load products'
+        )
+      }
+
+      const data =
+        await response.json()
+
+      setProducts(data)
+    } catch (error) {
+      setError(
+        error.message ||
+          'Failed to load products'
+      )
+    } finally {
+      setLoading(false)
     }
+  }
 
-    return initialProducts
-  })
+  useEffect(() => {
+    fetchProducts()
+  }, [])
 
-  const saveProducts = (updatedProducts) => {
-    localStorage.setItem(
-      'shopnest-products',
-      JSON.stringify(updatedProducts)
+  const addProduct = async (product) => {
+    const token =
+      localStorage.getItem(
+        'shopnest-token'
+      )
+
+    const response = await fetch(
+      'http://localhost:8080/api/products',
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            'application/json',
+
+          Authorization:
+            `Bearer ${token}`
+        },
+
+        body: JSON.stringify(product)
+      }
     )
 
-    return updatedProducts
+    if (!response.ok) {
+      throw new Error(
+        'Failed to add product'
+      )
+    }
+
+    const newProduct =
+      await response.json()
+
+    setProducts((currentProducts) => [
+      ...currentProducts,
+      newProduct
+    ])
+
+    return newProduct
   }
 
-  const addProduct = (product) => {
-    setProducts((currentProducts) => {
-      const updatedProducts = [
-        ...currentProducts,
-        product
-      ]
+  const deleteProduct = async (
+    productId
+  ) => {
+    const token =
+      localStorage.getItem(
+        'shopnest-token'
+      )
 
-      return saveProducts(updatedProducts)
-    })
+    const response = await fetch(
+      `http://localhost:8080/api/products/${productId}`,
+      {
+        method: 'DELETE',
+
+        headers: {
+          Authorization:
+            `Bearer ${token}`
+        }
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(
+        'Failed to delete product'
+      )
+    }
+
+    setProducts((currentProducts) =>
+      currentProducts.filter(
+        (product) =>
+          product.id !== productId
+      )
+    )
   }
 
-  const deleteProduct = (productId) => {
-    setProducts((currentProducts) => {
-      const updatedProducts =
-        currentProducts.filter(
-          (product) =>
-            product.id !== productId
+  const updateProduct = async (
+    updatedProduct
+  ) => {
+    const token =
+      localStorage.getItem(
+        'shopnest-token'
+      )
+
+    const response = await fetch(
+      `http://localhost:8080/api/products/${updatedProduct.id}`,
+      {
+        method: 'PUT',
+
+        headers: {
+          'Content-Type':
+            'application/json',
+
+          Authorization:
+            `Bearer ${token}`
+        },
+
+        body: JSON.stringify(
+          updatedProduct
         )
+      }
+    )
 
-      return saveProducts(updatedProducts)
-    })
-  }
+    if (!response.ok) {
+      throw new Error(
+        'Failed to update product'
+      )
+    }
 
-  const updateProduct = (updatedProduct) => {
-    setProducts((currentProducts) => {
-      const updatedProducts =
-        currentProducts.map((product) =>
-          product.id === updatedProduct.id
-            ? updatedProduct
-            : product
-        )
+    const savedProduct =
+      await response.json()
 
-      return saveProducts(updatedProducts)
-    })
+    setProducts((currentProducts) =>
+      currentProducts.map((product) =>
+        product.id === savedProduct.id
+          ? savedProduct
+          : product
+      )
+    )
+
+    return savedProduct
   }
 
   return (
     <ProductContext.Provider
       value={{
         products,
+        loading,
+        error,
+        fetchProducts,
         addProduct,
         deleteProduct,
         updateProduct

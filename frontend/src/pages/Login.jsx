@@ -9,7 +9,8 @@ import {
   Col,
   Card,
   Form,
-  Button
+  Button,
+  Alert
 } from 'react-bootstrap'
 
 import {
@@ -29,19 +30,70 @@ function Login() {
   const [password, setPassword] =
     useState('')
 
+  const [error, setError] =
+    useState('')
+
+  const [loading, setLoading] =
+    useState(false)
+
   const navigate = useNavigate()
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
-    const loggedInUser = {
-      name: email.split('@')[0],
-      email
+    setError('')
+    setLoading(true)
+
+    try {
+      const response = await fetch(
+        'http://localhost:8080/api/auth/login',
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body: JSON.stringify({
+            email,
+            password
+          })
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(
+          'Invalid email or password'
+        )
+      }
+
+      const data =
+        await response.json()
+
+      const loggedInUser = {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        role: data.role
+      }
+
+      localStorage.setItem(
+        'shopnest-token',
+        data.token
+      )
+
+      setUser(loggedInUser)
+
+      navigate('/')
+    } catch (error) {
+      setError(
+        error.message ||
+          'Login failed. Please try again.'
+      )
+    } finally {
+      setLoading(false)
     }
-
-    setUser(loggedInUser)
-
-    navigate('/')
   }
 
   return (
@@ -69,6 +121,12 @@ function Login() {
                     and manage your orders.
                   </p>
                 </div>
+
+                {error && (
+                  <Alert variant="danger">
+                    {error}
+                  </Alert>
+                )}
 
                 <Form onSubmit={handleSubmit}>
                   <Form.Group className="mb-3">
@@ -112,15 +170,13 @@ function Login() {
                     variant="warning"
                     size="lg"
                     className="w-100"
+                    disabled={loading}
                   >
-                    Sign In
+                    {loading
+                      ? 'Signing In...'
+                      : 'Sign In'}
                   </Button>
                 </Form>
-
-                <div className="auth-demo-note">
-                  Demo authentication is currently
-                  handled only in the frontend.
-                </div>
 
                 <p className="auth-switch-text">
                   Don't have an account?{' '}

@@ -20,6 +20,7 @@ import {
 
 import CartContext from '../context/CartContext'
 import OrderContext from '../context/OrderContext'
+import AuthContext from '../context/AuthContext'
 
 function Checkout() {
   const {
@@ -29,6 +30,9 @@ function Checkout() {
 
   const { addOrder } =
     useContext(OrderContext)
+
+  const { user } =
+    useContext(AuthContext)
 
   const navigate = useNavigate()
 
@@ -67,6 +71,9 @@ function Checkout() {
   const [error, setError] =
     useState('')
 
+  const [loading, setLoading] =
+    useState(false)
+
   const handlePhoneChange = (event) => {
     const value =
       event.target.value.replace(
@@ -87,7 +94,7 @@ function Checkout() {
     setPinCode(value.slice(0, 6))
   }
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (
       !fullName.trim() ||
       !phone.trim() ||
@@ -98,6 +105,7 @@ function Checkout() {
       setError(
         'Please fill in all delivery details.'
       )
+
       return
     }
 
@@ -105,6 +113,7 @@ function Checkout() {
       setError(
         'Please enter a valid 10-digit phone number.'
       )
+
       return
     }
 
@@ -112,6 +121,7 @@ function Checkout() {
       setError(
         'Please enter a valid 6-digit PIN code.'
       )
+
       return
     }
 
@@ -119,42 +129,73 @@ function Checkout() {
       setError(
         'Your cart is empty.'
       )
+
       return
     }
 
-    setError('')
+    if (!user) {
+      setError(
+        'Please sign in before placing an order.'
+      )
 
-    const newOrder = {
-      id: crypto.randomUUID(),
-
-      items: cartItems.map(
-        (item) => ({
-          ...item
-        })
-      ),
-
-      total: cartTotal,
-
-      deliveryAddress: {
-        fullName,
-        phone,
-        address,
-        city,
-        pinCode
-      },
-
-      paymentMethod,
-
-      status: 'Order Placed',
-
-      orderDate:
-        new Date().toLocaleString()
+      return
     }
 
-    addOrder(newOrder)
-    clearCart()
+    try {
+      setLoading(true)
+      setError('')
 
-    navigate('/order-success')
+      const shippingAddress = [
+        fullName,
+        address,
+        `${city} - ${pinCode}`,
+        `Phone: ${phone}`
+      ].join(', ')
+
+      const orderData = {
+        userId: user.id,
+
+        totalAmount: cartTotal,
+
+        status: 'Order Placed',
+
+        paymentMethod,
+
+        shippingAddress,
+
+        orderDate:
+          new Date().toLocaleString(),
+
+        items: cartItems.map(
+          (item) => ({
+            productId: item.id,
+            productName: item.name,
+            category: item.category,
+            price: item.price,
+            image: item.image,
+            quantity: item.quantity
+          })
+        )
+      }
+
+      await addOrder(orderData)
+
+      await clearCart()
+
+      navigate('/order-success')
+    } catch (error) {
+      setError(
+        error.message ||
+          'Failed to place order. Please try again.'
+      )
+
+      console.error(
+        'Place order error:',
+        error
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (cartItems.length === 0) {
@@ -411,7 +452,7 @@ function Checkout() {
 
                 <div className="checkout-demo-note">
                   These payment methods are
-                  currently frontend UI only.
+                  currently demo options.
                   Real payment processing will
                   be connected later.
                 </div>
@@ -518,8 +559,11 @@ function Checkout() {
                   onClick={
                     handlePlaceOrder
                   }
+                  disabled={loading}
                 >
-                  Place Order
+                  {loading
+                    ? 'Placing Order...'
+                    : 'Place Order'}
                 </Button>
 
                 <p className="checkout-secure-note">

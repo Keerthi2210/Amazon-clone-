@@ -41,9 +41,12 @@ function Signup() {
   const [error, setError] =
     useState('')
 
+  const [loading, setLoading] =
+    useState(false)
+
   const navigate = useNavigate()
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
     if (
@@ -56,15 +59,59 @@ function Signup() {
     }
 
     setError('')
+    setLoading(true)
 
-    const newUser = {
-      name,
-      email
+    try {
+      const response = await fetch(
+        'http://localhost:8080/api/auth/register',
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body: JSON.stringify({
+            name,
+            email,
+            password
+          })
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(
+          'Unable to create account'
+        )
+      }
+
+      const data =
+        await response.json()
+
+      const newUser = {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        role: data.role
+      }
+
+      localStorage.setItem(
+        'shopnest-token',
+        data.token
+      )
+
+      setUser(newUser)
+
+      navigate('/')
+    } catch (error) {
+      setError(
+        error.message ||
+          'Signup failed. Please try again.'
+      )
+    } finally {
+      setLoading(false)
     }
-
-    setUser(newUser)
-
-    navigate('/')
   }
 
   return (
@@ -179,15 +226,13 @@ function Signup() {
                     variant="warning"
                     size="lg"
                     className="w-100"
+                    disabled={loading}
                   >
-                    Create Account
+                    {loading
+                      ? 'Creating Account...'
+                      : 'Create Account'}
                   </Button>
                 </Form>
-
-                <div className="auth-demo-note">
-                  Account creation is currently
-                  frontend-only for this project.
-                </div>
 
                 <p className="auth-switch-text">
                   Already have an account?{' '}

@@ -6,7 +6,9 @@ import {
   Col,
   Card,
   Badge,
-  Button
+  Button,
+  Alert,
+  Spinner
 } from 'react-bootstrap'
 
 import {
@@ -17,10 +19,39 @@ import {
 import OrderContext from '../context/OrderContext'
 
 function Orders() {
-  const { orders } =
-    useContext(OrderContext)
+  const {
+    orders,
+    loading,
+    error
+  } = useContext(OrderContext)
 
   const navigate = useNavigate()
+
+  if (loading) {
+    return (
+      <div className="orders-page">
+        <Container className="py-5 text-center">
+          <Spinner animation="border" />
+
+          <p className="mt-3">
+            Loading your orders...
+          </p>
+        </Container>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="orders-page">
+        <Container className="py-5">
+          <Alert variant="danger">
+            {error}
+          </Alert>
+        </Container>
+      </div>
+    )
+  }
 
   if (orders.length === 0) {
     return (
@@ -148,7 +179,7 @@ function Orders() {
 
                   <strong>
                     ₹
-                    {order.total.toLocaleString(
+                    {order.totalAmount.toLocaleString(
                       'en-IN'
                     )}
                   </strong>
@@ -208,20 +239,20 @@ function Orders() {
                             className="order-product-item"
                           >
                             <Link
-                              to={`/products/${item.id}`}
+                              to={`/products/${item.productId}`}
                               className="order-product-image-wrapper"
                             >
                               <img
                                 src={item.image}
-                                alt={item.name}
+                                alt={item.productName}
                               />
                             </Link>
 
                             <div className="order-product-info">
                               <Link
-                                to={`/products/${item.id}`}
+                                to={`/products/${item.productId}`}
                               >
-                                {item.name}
+                                {item.productName}
                               </Link>
 
                               <span>
@@ -255,40 +286,8 @@ function Orders() {
                         Delivery Address
                       </h6>
 
-                      <strong>
-                        {
-                          order
-                            .deliveryAddress
-                            .fullName
-                        }
-                      </strong>
-
                       <p>
-                        {
-                          order
-                            .deliveryAddress
-                            .address
-                        }
-                        <br />
-
-                        {
-                          order
-                            .deliveryAddress
-                            .city
-                        }{' '}
-                        -{' '}
-                        {
-                          order
-                            .deliveryAddress
-                            .pinCode
-                        }
-                        <br />
-
-                        {
-                          order
-                            .deliveryAddress
-                            .phone
-                        }
+                        {order.shippingAddress}
                       </p>
 
                       <div className="order-info-divider" />
