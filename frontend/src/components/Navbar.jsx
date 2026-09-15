@@ -63,15 +63,15 @@ function Navbar() {
             to="/"
             className="shopnest-brand"
           >
-            Shop<span>Nest</span>
+            amazon<span>clone</span>
           </BootstrapNavbar.Brand>
 
           <BootstrapNavbar.Toggle
-            aria-controls="shopnest-navbar"
+            aria-controls="amazon-clone-navbar"
           />
 
           <BootstrapNavbar.Collapse
-            id="shopnest-navbar"
+            id="amazon-clone-navbar"
           >
             <div className="delivery-location">
               <span className="delivery-label">
@@ -89,7 +89,7 @@ function Navbar() {
             >
               <Form.Control
                 type="search"
-                placeholder="Search for products..."
+                placeholder="Search Amazon Clone"
                 aria-label="Search products"
                 value={searchTerm}
                 onChange={(event) =>
@@ -125,7 +125,7 @@ function Navbar() {
                 </small>
 
                 <strong>
-                  Account
+                  Account & Lists
                 </strong>
               </Nav.Link>
 
@@ -143,19 +143,21 @@ function Navbar() {
                 </strong>
               </Nav.Link>
 
-              <Nav.Link
-                as={Link}
-                to="/admin"
-                className="shopnest-nav-item"
-              >
-                <small>
-                  ShopNest
-                </small>
+              {user?.role === 'ADMIN' && (
+                <Nav.Link
+                  as={Link}
+                  to="/admin"
+                  className="shopnest-nav-item"
+                >
+                  <small>
+                    Admin
+                  </small>
 
-                <strong>
-                  Admin
-                </strong>
-              </Nav.Link>
+                  <strong>
+                    Dashboard
+                  </strong>
+                </Nav.Link>
+              )}
 
               <Nav.Link
                 as={Link}
@@ -187,7 +189,7 @@ function Navbar() {
             to="/products"
             className="category-link category-link-main"
           >
-            ☰ All Products
+            ☰ All
           </Link>
 
           <Link
@@ -216,6 +218,20 @@ function Navbar() {
             className="category-link"
           >
             Books
+          </Link>
+
+          <Link
+            to="/products"
+            className="category-link"
+          >
+            Today's Deals
+          </Link>
+
+          <Link
+            to="/products"
+            className="category-link"
+          >
+            Best Sellers
           </Link>
         </Container>
       </nav>

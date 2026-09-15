@@ -6,6 +6,7 @@ import {
 } from 'react'
 
 import AuthContext from './AuthContext'
+import API_BASE_URL from '../config/api'
 
 const OrderContext = createContext()
 
@@ -38,7 +39,7 @@ export function OrderProvider({ children }) {
       setError('')
 
       const response = await fetch(
-        `http://localhost:8080/api/orders/user/${user.id}`,
+        `${API_BASE_URL}/api/orders/user/${user.id}`,
         {
           headers: {
             Authorization:
@@ -73,7 +74,7 @@ export function OrderProvider({ children }) {
 
   const addOrder = async (order) => {
     const response = await fetch(
-      'http://localhost:8080/api/orders',
+      `${API_BASE_URL}/api/orders`,
       {
         method: 'POST',
 

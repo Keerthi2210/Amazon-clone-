@@ -3209,3 +3209,195 @@ h6 {
 .shopnest-navbar .navbar-toggler:focus {
   box-shadow: 0 0 0 0.15rem rgba(245, 158, 11, 0.35);
 }
+/* =========================================
+   AMAZON CLONE FINAL THEME OVERRIDES
+========================================= */
+
+body {
+  background-color: #eaeded;
+  color: #0f1111;
+}
+
+/* Main Amazon-style header */
+.shopnest-navbar {
+  background-color: #131921;
+  min-height: 60px;
+  padding: 7px 0;
+}
+
+.shopnest-brand {
+  font-size: 1.55rem !important;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.shopnest-brand span {
+  color: #ff9900;
+  font-size: 0.78rem;
+  margin-left: 3px;
+  letter-spacing: 0;
+}
+
+.delivery-label {
+  color: #cccccc;
+}
+
+.shopnest-nav-item:hover,
+.shopnest-cart-link:hover {
+  background-color: transparent;
+  outline: 1px solid #ffffff;
+}
+
+/* Amazon-style search */
+.shopnest-search .form-control {
+  min-height: 42px;
+  border-radius: 4px 0 0 4px;
+}
+
+.shopnest-search .form-control:focus {
+  box-shadow: 0 0 0 3px #ff9900;
+}
+
+.search-button {
+  background-color: #febd69;
+  border-radius: 0 4px 4px 0;
+}
+
+.search-button:hover {
+  background-color: #f3a847;
+}
+
+.cart-count {
+  background-color: transparent;
+  color: #f08804;
+  font-size: 0.95rem;
+}
+
+/* Amazon secondary navigation */
+.category-navbar {
+  background-color: #232f3e;
+}
+
+.category-link {
+  color: #ffffff;
+  border: 1px solid transparent;
+  border-bottom: none;
+}
+
+.category-link:hover {
+  color: #ffffff;
+  background-color: transparent;
+  border: 1px solid #ffffff;
+}
+
+/* Marketplace cards */
+.card {
+  border-radius: 4px;
+}
+
+.product-card {
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.product-card:hover {
+  transform: none;
+  border-color: #c7c7c7;
+  box-shadow: 0 2px 8px rgba(15, 17, 17, 0.15);
+}
+
+.product-image-wrapper {
+  background-color: #ffffff;
+}
+
+.product-title-link:hover .product-title {
+  color: #c7511f;
+}
+
+.product-star,
+.product-details-star,
+.admin-rating {
+  color: #ffa41c;
+}
+
+.product-price,
+.product-details-price {
+  color: #0f1111;
+}
+
+/* Amazon-style yellow action buttons */
+.btn-warning,
+.product-cart-button,
+.product-details-cart-button {
+  background-color: #ffd814 !important;
+  border-color: #fcd200 !important;
+  color: #0f1111 !important;
+  border-radius: 20px !important;
+  font-weight: 500;
+}
+
+.btn-warning:hover,
+.product-cart-button:hover,
+.product-details-cart-button:hover {
+  background-color: #f7ca00 !important;
+  border-color: #f2c200 !important;
+}
+
+/* Page surfaces */
+.featured-section {
+  background-color: #eaeded;
+}
+
+.product-filter-card,
+.cart-item-card,
+.cart-summary-card,
+.checkout-card,
+.checkout-summary-card,
+.order-card,
+.profile-card,
+.admin-table-card,
+.admin-form-card {
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+/* Amazon-like section headers */
+.products-header,
+.cart-page-header,
+.checkout-header,
+.orders-header,
+.profile-header,
+.admin-header {
+  background: #232f3e;
+}
+
+/* Links */
+.section-link:hover,
+.cart-item-title:hover,
+.order-product-info a:hover,
+.product-details-breadcrumb a:hover {
+  color: #c7511f !important;
+}
+
+/* Inputs */
+.form-control:focus,
+.form-select:focus {
+  border-color: #e77600;
+  box-shadow: 0 0 0 2px rgba(231, 118, 0, 0.25);
+}
+
+/* Admin */
+.admin-products-table thead,
+.admin-orders-table thead {
+  background-color: #f3f3f3;
+}
+
+/* Mobile */
+@media (max-width: 991px) {
+  .shopnest-nav-item:hover,
+  .shopnest-cart-link:hover {
+    outline: none;
+  }
+}

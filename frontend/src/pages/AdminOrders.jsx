@@ -18,6 +18,8 @@ import {
   useNavigate
 } from 'react-router-dom'
 
+import API_BASE_URL from '../config/api'
+
 function AdminOrders() {
   const [orders, setOrders] =
     useState([])
@@ -42,7 +44,7 @@ function AdminOrders() {
           )
 
         const response = await fetch(
-          'http://localhost:8080/api/orders',
+          `${API_BASE_URL}/api/orders`,
           {
             headers: {
               Authorization:

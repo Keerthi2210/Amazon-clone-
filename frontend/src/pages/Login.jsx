@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api'
 import {
   useContext,
   useState
@@ -46,7 +47,7 @@ function Login() {
 
     try {
       const response = await fetch(
-        'http://localhost:8080/api/auth/login',
+        `${API_BASE_URL}/api/auth/login`,
         {
           method: 'POST',
 

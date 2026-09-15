@@ -19,6 +19,7 @@ import {
 } from 'react-router-dom'
 
 import AuthContext from '../context/AuthContext'
+import API_BASE_URL from '../config/api'
 
 function Signup() {
   const { setUser } =
@@ -63,7 +64,7 @@ function Signup() {
 
     try {
       const response = await fetch(
-        'http://localhost:8080/api/auth/register',
+        `${API_BASE_URL}/api/auth/register`,
         {
           method: 'POST',
 

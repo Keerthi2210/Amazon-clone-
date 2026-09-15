@@ -8,6 +8,7 @@ import {
 
 import AuthContext from './AuthContext'
 import ProductContext from './ProductContext'
+import API_BASE_URL from '../config/api'
 
 const CartContext = createContext()
 
@@ -45,7 +46,7 @@ export function CartProvider({ children }) {
       setError('')
 
       const response = await fetch(
-        `http://localhost:8080/api/cart/${user.id}`,
+        `${API_BASE_URL}/api/cart/${user.id}`,
         {
           headers: {
             Authorization:
@@ -115,7 +116,7 @@ export function CartProvider({ children }) {
     }
 
     const response = await fetch(
-      'http://localhost:8080/api/cart',
+      `${API_BASE_URL}/api/cart`,
       {
         method: 'POST',
 
@@ -190,7 +191,7 @@ export function CartProvider({ children }) {
       cartItem.quantity + 1
 
     const response = await fetch(
-      `http://localhost:8080/api/cart/${cartItem.id}?quantity=${newQuantity}`,
+      `${API_BASE_URL}/api/cart/${cartItem.id}?quantity=${newQuantity}`,
       {
         method: 'PUT',
 
@@ -242,7 +243,7 @@ export function CartProvider({ children }) {
       cartItem.quantity - 1
 
     const response = await fetch(
-      `http://localhost:8080/api/cart/${cartItem.id}?quantity=${newQuantity}`,
+      `${API_BASE_URL}/api/cart/${cartItem.id}?quantity=${newQuantity}`,
       {
         method: 'PUT',
 
@@ -288,7 +289,7 @@ export function CartProvider({ children }) {
     }
 
     const response = await fetch(
-      `http://localhost:8080/api/cart/item/${cartItem.id}`,
+      `${API_BASE_URL}/api/cart/item/${cartItem.id}`,
       {
         method: 'DELETE',
 
@@ -321,7 +322,7 @@ export function CartProvider({ children }) {
     }
 
     const response = await fetch(
-      `http://localhost:8080/api/cart/user/${user.id}`,
+      `${API_BASE_URL}/api/cart/user/${user.id}`,
       {
         method: 'DELETE',
 

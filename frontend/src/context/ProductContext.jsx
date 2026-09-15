@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api'
 import {
   createContext,
   useEffect,
@@ -21,9 +22,7 @@ export function ProductProvider({ children }) {
       setLoading(true)
       setError('')
 
-      const response = await fetch(
-        'http://localhost:8080/api/products'
-      )
+      const response = await fetch(`${API_BASE_URL}/api/products`)
 
       if (!response.ok) {
         throw new Error(
@@ -56,7 +55,7 @@ export function ProductProvider({ children }) {
       )
 
     const response = await fetch(
-      'http://localhost:8080/api/products',
+      `${API_BASE_URL}/api/products`,
       {
         method: 'POST',
 
@@ -98,7 +97,7 @@ export function ProductProvider({ children }) {
       )
 
     const response = await fetch(
-      `http://localhost:8080/api/products/${productId}`,
+      `${API_BASE_URL}/api/products/${productId}`,
       {
         method: 'DELETE',
 
@@ -132,7 +131,7 @@ export function ProductProvider({ children }) {
       )
 
     const response = await fetch(
-      `http://localhost:8080/api/products/${updatedProduct.id}`,
+      `${API_BASE_URL}/api/products/${updatedProduct.id}`,
       {
         method: 'PUT',
 
